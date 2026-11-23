@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prática 01 · Criação de Rede Física Local · Redes de Computadores</title>
-    <meta name="description" content="Laboratório guiado (.pka) no Cisco Packet Tracer: 4 computadores, 4 tomadas RJ45, 1 Patch Panel e 1 Switch configurados na rede 192.168.0.0/24.">
+    <title>Laboratório 01 · Criação de Rede Física Local · Redes de Computadores</title>
+    <meta name="description" content="Laboratório 01 (.pka) no Cisco Packet Tracer: 4 computadores, 4 tomadas RJ45, 1 Patch Panel e 1 Switch configurados na rede 192.168.0.0/24.">
     <meta name="theme-color" content="#0a1020">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
     <script>
@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=2026.11.23i">
+    <link rel="stylesheet" href="../style.css?v=2026.11.23j">
 </head>
 <body class="pagina-lab" data-par="azul">
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
@@ -66,18 +66,18 @@
         <section class="lab-hero">
             <div class="lab-hero-grade">
                 <div>
-                    <p class="etiqueta"><span class="etiqueta-salto">prática 01</span><span class="etiqueta-ip">192.168.0.0/24</span><span class="etiqueta-nome">cabeamento estruturado</span></p>
+                    <p class="etiqueta"><span class="etiqueta-salto">laboratório 01</span><span class="etiqueta-ip">192.168.0.0/24</span><span class="etiqueta-nome">cabeamento estruturado</span></p>
                     <h1 class="titulo-secao">Criação de Rede Física Local</h1>
                     <p class="secao-intro">Montagem completa de uma rede local corporativa/residencial no ambiente físico (<em>Physical Workspace</em>) do Cisco Packet Tracer seguindo a norma ABNT NBR 14565: tomadas de telecomunicações RJ45 nas salas, painel de manobra (<em>Patch Panel</em>) e Switch em rack de 19 polegadas.</p>
                 </div>
 
                 <aside class="cartao-download" aria-label="Download do laboratório Packet Tracer">
-                    <h2>Baixar Laboratório Guiado (.PKA)</h2>
-                    <p>Ao abrir no Cisco Packet Tracer, a janela de instruções em português guia cada passo e corrige automaticamente o status das portas e configurações de IP (0% a 100%).</p>
-                    <div class="arquivo-nome">Pratica_01_Rede_Fisica_Local.pka <span>12 pts</span></div>
+                    <h2>Baixar Laboratório 01 (.PKA)</h2>
+                    <p>Arquivo <code>.pka</code> dividido em 3 páginas de etapas dentro do Packet Tracer, com todos os dispositivos em português e verificação automática de 12 itens.</p>
+                    <div class="arquivo-nome">Laboratorio_01_Rede_Fisica_Local.pka <span>12 pts</span></div>
                     <div class="botoes">
-                        <a class="botao botao-cheio" href="./arquivos/Pratica_01_Rede_Fisica_Local.pka" download>Baixar arquivo .PKA</a>
-                        <a class="botao botao-linha" href="#roteiro">Ver etapas visuais</a>
+                        <a class="botao botao-cheio" href="./arquivos/Laboratorio_01_Rede_Fisica_Local.pka" download>Baixar arquivo .PKA</a>
+                        <a class="botao botao-linha" href="#roteiro">Iniciar etapas</a>
                     </div>
                 </aside>
             </div>
@@ -85,11 +85,10 @@
             <!-- DIAGRAMA PRINCIPAL ANIMADO -->
             <div class="diagrama-caixa">
                 <div class="diagrama-cabeca">
-                    <h3>Arquitetura Física · Salas → Tomadas RJ45 → Patch Panel → Switch no Rack</h3>
+                    <h3>Diagrama do Laboratório 01 · Salas → Tomadas RJ45 → Painel-Conexao-RJ45 → Switch-Principal</h3>
                     <span>Norma ABNT NBR 14565 · Rede Local 192.168.0.0/24</span>
                 </div>
-                <svg class="diagrama-svg" viewBox="0 0 920 340" role="img" aria-label="Diagrama animado mostrando 4 computadores ligados em 4 tomadas RJ45, que se conectam via PunchDown ao Patch Panel nas portas 1, 5, 9 e 13, e via Patch Cord às portas FastEthernet 0/1, 0/5, 0/9 e 0/13 do Switch 2960">
-                    <!-- Enlaces animados entre colunas -->
+                <svg class="diagrama-svg" viewBox="0 0 920 340" role="img" aria-label="Diagrama animado mostrando Notebook-Sala1, PC-Sala2, PC-Sala3 e Notebook-Sala4 ligados em Tomada-RJ45-Sala1 a Sala4, que se conectam ao Painel-Conexao-RJ45 nas portas 1, 5, 9 e 13, e ao Switch-Principal nas portas FastEthernet 0/1, 0/5, 0/9 e 0/13">
                     <g stroke="#7fd6ff" stroke-width="2.5" class="cabo-animado">
                         <line x1="205" y1="68" x2="270" y2="68"/>
                         <line x1="205" y1="140" x2="270" y2="140"/>
@@ -172,8 +171,7 @@
         <section class="secao">
             <div class="secao-cabeca">
                 <p class="etiqueta"><span class="etiqueta-salto">gabarito</span><span class="etiqueta-ip">12 itens verificados</span><span class="etiqueta-nome">mapeamento</span></p>
-                <h2 class="titulo-secao">Mapa de Portas e Endereçamento IP</h2>
-                <p class="secao-intro">No arquivo <code>.pka</code>, a infraestrutura física no Rack e nas 4 salas já está montada para você explorar na aba <b>Physical</b> e configurar o endereçamento IPv4 abaixo:</p>
+                <h2 class="titulo-secao">Tabela de Portas e Endereçamento IPv4</h2>
             </div>
 
             <div class="tabela-envoltorio">
@@ -183,37 +181,37 @@
                             <th>Estação (Sala)</th>
                             <th>Endereço IPv4</th>
                             <th>Máscara</th>
-                            <th>Tomada da Sala (Frente)</th>
-                            <th>Manobra no Rack (Patch Panel ↔ Switch)</th>
+                            <th>Tomada da Sala</th>
+                            <th>Manobra no Rack (Painel ↔ Switch)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><b>Notebook-Sala1</b><small>Porta FastEthernet0</small></td>
+                            <td><b>Notebook-Sala1</b><small>FastEthernet0</small></td>
                             <td><code>192.168.0.1</code></td>
                             <td><code>255.255.255.0</code></td>
-                            <td>Tomada-RJ45-Sala1 → <code>Jack1</code></td>
+                            <td>Tomada-RJ45-Sala1 (<code>Jack1</code>)</td>
                             <td><code>Jack1</code> ↔ <code>FastEthernet0/1</code></td>
                         </tr>
                         <tr>
-                            <td><b>PC-Sala2</b><small>Porta FastEthernet0</small></td>
+                            <td><b>PC-Sala2</b><small>FastEthernet0</small></td>
                             <td><code>192.168.0.2</code></td>
                             <td><code>255.255.255.0</code></td>
-                            <td>Tomada-RJ45-Sala2 → <code>Jack1</code></td>
+                            <td>Tomada-RJ45-Sala2 (<code>Jack1</code>)</td>
                             <td><code>Jack5</code> ↔ <code>FastEthernet0/5</code></td>
                         </tr>
                         <tr>
-                            <td><b>PC-Sala3</b><small>Porta FastEthernet0</small></td>
+                            <td><b>PC-Sala3</b><small>FastEthernet0</small></td>
                             <td><code>192.168.0.3</code></td>
                             <td><code>255.255.255.0</code></td>
-                            <td>Tomada-RJ45-Sala3 → <code>Jack1</code></td>
+                            <td>Tomada-RJ45-Sala3 (<code>Jack1</code>)</td>
                             <td><code>Jack9</code> ↔ <code>FastEthernet0/9</code></td>
                         </tr>
                         <tr>
-                            <td><b>Notebook-Sala4</b><small>Porta FastEthernet0</small></td>
+                            <td><b>Notebook-Sala4</b><small>FastEthernet0</small></td>
                             <td><code>192.168.0.4</code></td>
                             <td><code>255.255.255.0</code></td>
-                            <td>Tomada-RJ45-Sala4 → <code>Jack1</code></td>
+                            <td>Tomada-RJ45-Sala4 (<code>Jack1</code>)</td>
                             <td><code>Jack13</code> ↔ <code>FastEthernet0/13</code></td>
                         </tr>
                     </tbody>
@@ -221,22 +219,22 @@
             </div>
         </section>
 
-        <!-- ROTEIRO VISUAL COM ILUSTRAÇÕES DE CADA ETAPA -->
-        <section class="secao" id="roteiro" data-roteiro="pratica-01">
+        <!-- ROTEIRO PASSO A PASSO NAVEGÁVEL -->
+        <section class="secao" id="roteiro" data-roteiro="laboratorio-01">
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">orientação visual</span><span class="etiqueta-nome">roteiro guiado</span></p>
-                <h2 class="titulo-secao">Etapas Visuais do Laboratório</h2>
-                <p class="secao-intro">Acompanhe os diagramas de cada etapa enquanto executa o arquivo <code>Pratica_01_Rede_Fisica_Local.pka</code> no Cisco Packet Tracer.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">execução guiada</span><span class="etiqueta-ip">etapa por etapa</span><span class="etiqueta-nome">verificação</span></p>
+                <h2 class="titulo-secao">Avance pelas Etapas do Laboratório 01</h2>
+                <p class="secao-intro">Execute uma etapa por vez no Packet Tracer, marque como concluída e confira abaixo o diagnóstico detalhado do que já foi cumprido.</p>
             </div>
 
             <div class="progresso-barra-env" aria-live="polite">
                 <div class="progresso-info">
-                    <span id="lab-progresso-texto">0 de 3 etapas concluídas (0%)</span>
+                    <span id="lab-progresso-texto">0 de 3 etapas cumpridas (0%)</span>
                 </div>
                 <div class="progresso-trilho">
                     <div class="progresso-preenchimento" id="lab-progresso-barra"></div>
                 </div>
-                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Desmarcar tudo</button>
+                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Reiniciar progresso</button>
             </div>
 
             <ol class="roteiro-lista">
@@ -245,39 +243,35 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="1">
-                            <span>Conectar os 4 Computadores à entrada frontal (Jack1) das Tomadas RJ45</span>
+                            <span>Inspecionar as Conexões nas 4 Salas (Jack1) e no Rack (Portas 1, 5, 9 e 13)</span>
                         </label>
-                        <span class="etapa-num">Etapa 01 · 4 pts</span>
+                        <span class="etapa-num">Página 1 do .PKA · 4 pts</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>No menu inferior esquerdo do Packet Tracer, clique no ícone do raio ⚡ (<b>Connections</b>) e escolha o cabo preto contínuo <b>Copper Straight-Through</b> (Par Trançado Direto).</li>
-                                <li>Em cada uma das 4 salas, clique sobre o computador → selecione a placa de rede <b>FastEthernet0</b>.</li>
-                                <li>Clique sobre a tomada de parede ao lado dele (<code>Tomada-RJ45-Sala1</code> a <code>Sala4</code>) e selecione o conector frontal <b>Jack1</b>.</li>
+                                <li>Clique na aba <b>Physical</b> (canto superior esquerdo) e abra <b>Home City → Corporate Office</b>.</li>
+                                <li>Verifique nas 4 salas que cada computador está ligado pelo cabo direto (<code>FastEthernet0</code>) na entrada frontal <b>Jack1</b> da tomada (<code>Tomada-RJ45-Sala1</code> a <code>Sala4</code>).</li>
+                                <li>Entre na sala central <b>Main Wiring Closet</b> para visualizar o Rack com o <b>Painel-Conexao-RJ45</b> conectado às portas <code>Fa0/1</code>, <code>Fa0/5</code>, <code>Fa0/9</code> e <code>Fa0/13</code> do <b>Switch-Principal</b>.</li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>Planta do Escritório · Salas 1 a 4</span><b>Cabo Direto: Fa0 ↔ Jack1</b></div>
+                            <div class="etapa-tela-barra"><span>Aba Physical · Salas e Rack</span><b>4 Links Ativos (33%)</b></div>
                             <svg viewBox="0 0 420 155">
-                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
-                                    <rect x="20" y="38" width="135" height="78" rx="8" fill="#16213d" stroke="#3b74c9" stroke-width="1.8"/>
-                                    <text x="32" y="62" font-weight="700" fill="#fff">Notebook / PC</text>
-                                    <rect x="32" y="76" width="110" height="24" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
-                                    <text x="42" y="92" fill="#7fd6ff">FastEthernet0</text>
+                                <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
+                                    <rect x="18" y="20" width="175" height="115" rx="8" fill="#16213d" stroke="#3b74c9"/>
+                                    <text x="28" y="42" font-weight="700" fill="#fff">Salas 1 a 4</text>
+                                    <text x="28" y="64" fill="#7fd6ff">FastEthernet0</text>
+                                    <text x="28" y="84" fill="#7fd39c">↕ Cabo Direto</text>
+                                    <text x="28" y="104" fill="#f0a067">Tomada-RJ45 (Jack1)</text>
 
-                                    <line x1="155" y1="88" x2="255" y2="68" stroke="#7fd39c" stroke-width="3" class="cabo-animado"/>
+                                    <line x1="193" y1="78" x2="227" y2="78" stroke="#7fd39c" stroke-width="2.5" class="cabo-animado"/>
 
-                                    <rect x="255" y="25" width="145" height="105" rx="8" fill="#16213d" stroke="#f0a067" stroke-width="1.8"/>
-                                    <text x="268" y="46" font-weight="700" fill="#fff">Tomada-RJ45-Sala</text>
-                                    <rect x="268" y="56" width="54" height="24" rx="4" fill="#0a1122" stroke="#7fd39c" stroke-width="1.6"/>
-                                    <text x="278" y="72" fill="#7fd39c" font-weight="700">Jack1</text>
-                                    <rect x="330" y="56" width="54" height="24" rx="4" fill="#0a1122" stroke="#26365c"/>
-                                    <text x="340" y="72" fill="#a3b3cf">Jack2</text>
-                                    <rect x="268" y="88" width="54" height="24" rx="4" fill="#0a1122" stroke="#26365c"/>
-                                    <text x="278" y="104" fill="#a3b3cf">Jack3</text>
-                                    <rect x="330" y="88" width="54" height="24" rx="4" fill="#0a1122" stroke="#26365c"/>
-                                    <text x="340" y="104" fill="#a3b3cf">Jack4</text>
+                                    <rect x="227" y="20" width="175" height="115" rx="8" fill="#111a30" stroke="#7fd39c"/>
+                                    <text x="237" y="42" font-weight="700" fill="#fff">Rack (Wiring Closet)</text>
+                                    <text x="237" y="64" fill="#f0a067">Painel: Jack 1, 5, 9, 13</text>
+                                    <text x="237" y="84" fill="#7fd39c">↕ Patch Cord</text>
+                                    <text x="237" y="104" fill="#7fd39c">Switch: Fa0/1, 5, 9, 13</text>
                                 </g>
                             </svg>
                         </div>
@@ -289,51 +283,36 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="2">
-                            <span>Ativar os 4 pontos no Rack: ligar o Patch Panel (Jacks 1, 5, 9 e 13) ao Switch</span>
+                            <span>Configurar os Endereços IPv4 (192.168.0.1 a .4) nas 4 Estações</span>
                         </label>
-                        <span class="etapa-num">Etapa 02 · 4 pts</span>
+                        <span class="etapa-num">Página 2 do .PKA · +8 pts</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>Entre no <b>Main Wiring Closet</b> (ou faça na aba <em>Logical</em>). Para enxergar melhor as portas no Rack, clique com o <b>botão direito</b> no <code>Painel-Conexao-RJ45</code> e marque <b>Manage All Cables on Device</b>.</li>
-                                <li>Com o cabo <b>Copper Straight-Through</b>, interligue os 4 pontos ativos pulando de 4 em 4 portas:
+                                <li>Clique em cada estação → aba <b>Desktop → IP Configuration</b>.</li>
+                                <li>Em <b>Static</b>, preencha o IP e a máscara <code>255.255.255.0</code>:
                                     <ul>
-                                        <li><b>Jack1</b> ↔ <b>FastEthernet0/1</b></li>
-                                        <li><b>Jack5</b> ↔ <b>FastEthernet0/5</b></li>
-                                        <li><b>Jack9</b> ↔ <b>FastEthernet0/9</b></li>
-                                        <li><b>Jack13</b> ↔ <b>FastEthernet0/13</b></li>
+                                        <li><b>Notebook-Sala1:</b> <code>192.168.0.1</code></li>
+                                        <li><b>PC-Sala2:</b> <code>192.168.0.2</code></li>
+                                        <li><b>PC-Sala3:</b> <code>192.168.0.3</code></li>
+                                        <li><b>Notebook-Sala4:</b> <code>192.168.0.4</code></li>
                                     </ul>
                                 </li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>Rack de 19" · Armário de Telecomunicações</span><b>Manobra Patch Cord</b></div>
-                            <svg viewBox="0 0 420 175">
-                                <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
-                                    <!-- Switch -->
-                                    <rect x="20" y="18" width="380" height="52" rx="6" fill="#111a30" stroke="#7fd39c" stroke-width="1.8"/>
-                                    <text x="32" y="36" font-weight="700" fill="#fff">Switch-Principal (Cisco 2960-24TT)</text>
-                                    <rect x="45" y="44" width="60" height="18" rx="3" fill="#0a1122" stroke="#7fd39c"/><text x="53" y="57" fill="#7fd39c">Fa0/1</text>
-                                    <rect x="135" y="44" width="60" height="18" rx="3" fill="#0a1122" stroke="#7fd39c"/><text x="143" y="57" fill="#7fd39c">Fa0/5</text>
-                                    <rect x="225" y="44" width="60" height="18" rx="3" fill="#0a1122" stroke="#7fd39c"/><text x="233" y="57" fill="#7fd39c">Fa0/9</text>
-                                    <rect x="315" y="44" width="66" height="18" rx="3" fill="#0a1122" stroke="#7fd39c"/><text x="321" y="57" fill="#7fd39c">Fa0/13</text>
-
-                                    <!-- Patch Panel -->
-                                    <rect x="20" y="105" width="380" height="52" rx="6" fill="#16213d" stroke="#d6a682" stroke-width="1.8"/>
-                                    <text x="32" y="148" font-weight="700" fill="#fff">Painel-Conexao-RJ45 (Copper Patch Panel)</text>
-                                    <rect x="45" y="113" width="60" height="18" rx="3" fill="#0a1122" stroke="#f0a067"/><text x="53" y="126" fill="#f0a067">Jack1</text>
-                                    <rect x="135" y="113" width="60" height="18" rx="3" fill="#0a1122" stroke="#f0a067"/><text x="143" y="126" fill="#f0a067">Jack5</text>
-                                    <rect x="225" y="113" width="60" height="18" rx="3" fill="#0a1122" stroke="#f0a067"/><text x="233" y="126" fill="#f0a067">Jack9</text>
-                                    <rect x="315" y="113" width="66" height="18" rx="3" fill="#0a1122" stroke="#f0a067"/><text x="321" y="126" fill="#f0a067">Jack13</text>
-
-                                    <!-- Patch cords -->
-                                    <g stroke="#7fd39c" stroke-width="2.6" class="cabo-animado">
-                                        <line x1="75" y1="62" x2="75" y2="113"/>
-                                        <line x1="165" y1="62" x2="165" y2="113"/>
-                                        <line x1="255" y1="62" x2="255" y2="113"/>
-                                        <line x1="348" y1="62" x2="348" y2="113"/>
-                                    </g>
+                            <div class="etapa-tela-barra"><span>Desktop → IP Configuration</span><b>Progresso: 100% (12/12)</b></div>
+                            <svg viewBox="0 0 420 155">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
+                                    <rect x="20" y="16" width="380" height="122" rx="8" fill="#16213d" stroke="#3b74c9"/>
+                                    <text x="34" y="42" font-weight="700" fill="#fff">Notebook-Sala1 a Sala4 (Static)</text>
+                                    <text x="34" y="74" fill="#a3b3cf">IPv4 Address:</text>
+                                    <rect x="170" y="58" width="210" height="22" rx="4" fill="#0a1122" stroke="#7fd39c"/>
+                                    <text x="182" y="73" fill="#7fd39c" font-weight="700">192.168.0.1  (até .4)</text>
+                                    <text x="34" y="106" fill="#a3b3cf">Subnet Mask:</text>
+                                    <rect x="170" y="90" width="210" height="22" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
+                                    <text x="182" y="105" fill="#7fd6ff">255.255.255.0</text>
                                 </g>
                             </svg>
                         </div>
@@ -345,42 +324,26 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="3">
-                            <span>Configurar os Endereços IPv4 (192.168.0.1 a .4) nas 4 Estações e atingir 100%</span>
+                            <span>Testar Ping no Prompt de Comando e Conferir Assessment Items</span>
                         </label>
-                        <span class="etapa-num">Etapa 03 · 8 pts</span>
+                        <span class="etapa-num">Página 3 do .PKA · Verificação</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>Clique em cada computador → aba <b>Desktop</b> → ícone <b>IP Configuration</b>.</li>
-                                <li>Em modo <b>Static</b>, preencha o IP e a máscara <code>255.255.255.0</code>:
-                                    <ul>
-                                        <li><b>Notebook-Sala1:</b> <code>192.168.0.1</code></li>
-                                        <li><b>PC-Sala2:</b> <code>192.168.0.2</code></li>
-                                        <li><b>PC-Sala3:</b> <code>192.168.0.3</code></li>
-                                        <li><b>Notebook-Sala4:</b> <code>192.168.0.4</code></li>
-                                    </ul>
-                                </li>
-                                <li>Observe o marcador da janela de atividade do Packet Tracer chegar a <b>100% (16/16 pontos)</b>!</li>
+                                <li>Em <b>Notebook-Sala4</b>, abra <b>Desktop → Command Prompt</b> e digite <code>ping 192.168.0.1</code>.</li>
+                                <li>Na janela de instruções do Packet Tracer, clique em <b>Check Results → Assessment Items</b> para conferir os <b>12 itens verdes cumpridos</b>.</li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>Aba Desktop → IP Configuration</span><b>Completion: 100%</b></div>
-                            <svg viewBox="0 0 420 165">
-                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
-                                    <rect x="20" y="16" width="380" height="132" rx="8" fill="#16213d" stroke="#3b74c9" stroke-width="1.5"/>
-                                    <circle cx="42" cy="36" r="6" fill="#7fd6ff"/><text x="56" y="40" font-weight="700" fill="#fff">Static</text>
-                                    <circle cx="135" cy="36" r="6" fill="none" stroke="#a3b3cf"/><text x="149" y="40" fill="#a3b3cf">DHCP</text>
-
-                                    <text x="36" y="72" fill="#a3b3cf">IPv4 Address</text>
-                                    <rect x="175" y="56" width="205" height="24" rx="4" fill="#0a1122" stroke="#7fd39c"/>
-                                    <text x="187" y="72" fill="#7fd39c" font-weight="700">192.168.0.1  (até .4)</text>
-
-                                    <text x="36" y="106" fill="#a3b3cf">Subnet Mask</text>
-                                    <rect x="175" y="90" width="205" height="24" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
-                                    <text x="187" y="106" fill="#7fd6ff">255.255.255.0</text>
-
-                                    <text x="36" y="135" fill="#7fd39c" font-size="9.5">✓ ping 192.168.0.1 → Reply bytes=32 time&lt;1ms</text>
+                            <div class="etapa-tela-barra"><span>Check Results → Assessment Items</span><b>12/12 Cumpridos</b></div>
+                            <svg viewBox="0 0 420 155">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
+                                    <rect x="18" y="16" width="384" height="122" rx="8" fill="#050912" stroke="#7fd39c"/>
+                                    <text x="32" y="40" fill="#7fd39c" font-weight="700">✓ Notebook-Sala1: IP 192.168.0.1 · Mask · Port Up</text>
+                                    <text x="32" y="64" fill="#7fd39c" font-weight="700">✓ PC-Sala2:       IP 192.168.0.2 · Mask · Port Up</text>
+                                    <text x="32" y="88" fill="#7fd39c" font-weight="700">✓ PC-Sala3:       IP 192.168.0.3 · Mask · Port Up</text>
+                                    <text x="32" y="112" fill="#7fd39c" font-weight="700">✓ Notebook-Sala4: IP 192.168.0.4 · Mask · Port Up</text>
                                 </g>
                             </svg>
                         </div>
@@ -391,26 +354,26 @@
 
         <!-- NAVEGAÇÃO ENTRE OS 5 LABORATÓRIOS -->
         <section class="secao">
-            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer (.PKA)</h3>
+            <h3 class="subtitulo">Laboratórios Cisco Packet Tracer (01 a 05)</h3>
             <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
                 <a class="lab-nav-item" href="./rede-fisica-local.html" aria-current="page" data-par="azul">
-                    <small>Prática 01 · .PKA</small>
+                    <small>Laboratório 01 · .PKA</small>
                     <b>Criação de Rede Física Local</b>
                 </a>
                 <a class="lab-nav-item" href="./rede-wan-dns-web.html" data-par="verde">
-                    <small>Prática 02 · .PKA</small>
+                    <small>Laboratório 02 · .PKA</small>
                     <b>Rede WAN Completa (DNS + Web)</b>
                 </a>
                 <a class="lab-nav-item" href="./roteador-sem-fio.html" data-par="laranja">
-                    <small>Lab 01 · .PKA</small>
+                    <small>Laboratório 03 · .PKA</small>
                     <b>Configurar Roteador Sem Fio e Clientes</b>
                 </a>
                 <a class="lab-nav-item" href="./conectar-servidor-web.html" data-par="marrom">
-                    <small>Lab 02 · .PKA</small>
+                    <small>Laboratório 04 · .PKA</small>
                     <b>Conectar-se a um Servidor Web</b>
                 </a>
                 <a class="lab-nav-item" href="./configurar-dhcp-wireless.html" data-par="azul">
-                    <small>Lab 03 · .PKA</small>
+                    <small>Laboratório 05 · .PKA</small>
                     <b>Configuração de DHCP em Roteador Wireless</b>
                 </a>
             </nav>
@@ -437,10 +400,10 @@
                 <div><dt>Disciplina</dt><dd>TIINF1647 · 67 h</dd></div>
             </dl>
         </div>
-        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · PRÁTICA 01 · CABEAMENTO ESTRUTURADO</p>
+        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · LABORATÓRIO 01 · REDE FÍSICA LOCAL</p>
     </footer>
 
-    <script src="../logica.js?v=2026.11.23i"></script>
-    <script src="../script.js?v=2026.11.23i"></script>
+    <script src="../logica.js?v=2026.11.23j"></script>
+    <script src="../script.js?v=2026.11.23j"></script>
 </body>
 </html>

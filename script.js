@@ -498,28 +498,145 @@
         ligarAbas($('#laboratorio .abas'));
     })();
 
-    /* ---------- subpáginas de laboratório: checklist de etapas salvo no navegador ---------- */
+    /* ---------- subpáginas de laboratório: navegador passo a passo + verificação detalhada ---------- */
     (function () {
         var roteiro = $('[data-roteiro]');
         if (!roteiro) return;
         var chave = 'rc:lab:' + roteiro.dataset.roteiro;
+        var cards = $$('.etapa-card', roteiro);
         var checks = $$('input[type="checkbox"][data-etapa]', roteiro);
         var barra = $('#lab-progresso-barra'), txt = $('#lab-progresso-texto'), bLimpar = $('#lab-progresso-limpar');
         var salvos = {};
         try { salvos = JSON.parse(localStorage.getItem(chave) || '{}'); } catch (e) { salvos = {}; }
 
+        var etapaAtiva = 0; // índice 0..cards.length-1, ou -1 para 'todas'
+        var listaEl = $('.roteiro-lista', roteiro);
+
+        // Cria barra de navegação de etapas e painel de diagnóstico (cumprido vs pendente)
+        var navEl = document.createElement('div');
+        navEl.className = 'etapas-nav';
+        navEl.setAttribute('role', 'tablist');
+        navEl.setAttribute('aria-label', 'Navegar pelas etapas do laboratório');
+
+        var pilulas = cards.map(function (card, idx) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'etapa-pilula';
+            b.setAttribute('role', 'tab');
+            b.textContent = 'Etapa ' + (idx + 1);
+            b.addEventListener('click', function () { irPara(idx); });
+            navEl.appendChild(b);
+            return b;
+        });
+
+        var bTodas = document.createElement('button');
+        bTodas.type = 'button';
+        bTodas.className = 'etapa-pilula';
+        bTodas.setAttribute('role', 'tab');
+        bTodas.textContent = 'Ver todas (' + cards.length + ')';
+        bTodas.addEventListener('click', function () { irPara(-1); });
+        navEl.appendChild(bTodas);
+
+        if (listaEl) listaEl.parentNode.insertBefore(navEl, listaEl);
+
+        // Adiciona rodapé de ação e avanço dentro de cada card de etapa
+        cards.forEach(function (card, idx) {
+            var chk = $('input[type="checkbox"][data-etapa]', card);
+            var numPts = $('.etapa-num', card) ? $('.etapa-num', card).textContent : ('Etapa ' + (idx + 1));
+            var verif = document.createElement('div');
+            verif.className = 'etapa-verificacao';
+
+            var statusSpan = document.createElement('span');
+            statusSpan.className = 'etapa-verificacao-txt';
+
+            var acoes = document.createElement('div');
+            acoes.className = 'etapa-acoes';
+
+            if (idx > 0) {
+                var bAnt = document.createElement('button');
+                bAnt.type = 'button';
+                bAnt.className = 'botao botao-linha botao-peq';
+                bAnt.textContent = '← Etapa anterior';
+                bAnt.addEventListener('click', function () { irPara(idx - 1); });
+                acoes.appendChild(bAnt);
+            }
+
+            var bMarcar = document.createElement('button');
+            bMarcar.type = 'button';
+            bMarcar.className = 'botao botao-cheio botao-peq';
+            bMarcar.addEventListener('click', function () {
+                if (chk) {
+                    chk.checked = true;
+                    atualizar();
+                }
+                if (idx < cards.length - 1) irPara(idx + 1);
+            });
+            acoes.appendChild(bMarcar);
+
+            verif.appendChild(statusSpan);
+            verif.appendChild(acoes);
+            card.appendChild(verif);
+            card._statusSpan = statusSpan;
+            card._bMarcar = bMarcar;
+            card._numPts = numPts;
+        });
+
+        // Cria painel de verificação geral (o que foi e o que não foi cumprido em detalhes)
+        var resumoEl = document.createElement('div');
+        resumoEl.className = 'resumo-verificacao';
+        resumoEl.innerHTML = '<h3><span>Diagnóstico de Verificação das Etapas</span><small id="resumo-contador" style="font-family:var(--fonte-mono);font-size:.82rem;color:var(--tinta-suave)"></small></h3><ul class="resumo-itens" id="resumo-itens"></ul>';
+        if (listaEl) listaEl.parentNode.appendChild(resumoEl);
+        var resumoLista = $('#resumo-itens', resumoEl);
+        var resumoContador = $('#resumo-contador', resumoEl);
+
+        function irPara(idx) {
+            etapaAtiva = idx;
+            cards.forEach(function (c, i) {
+                c.hidden = !(etapaAtiva === -1 || etapaAtiva === i);
+            });
+            pilulas.forEach(function (p, i) {
+                p.setAttribute('aria-selected', String(etapaAtiva === i));
+            });
+            bTodas.setAttribute('aria-selected', String(etapaAtiva === -1));
+        }
+
         function atualizar() {
             var feitos = 0;
-            checks.forEach(function (c) {
-                var card = c.closest('.etapa-card');
-                if (card) card.classList.toggle('concluida', c.checked);
+            var htmlResumo = [];
+            checks.forEach(function (c, i) {
+                var card = cards[i];
+                var tituloEtapa = $('span', c.parentNode) ? $('span', c.parentNode).textContent : ('Etapa ' + (i + 1));
+                if (card) {
+                    card.classList.toggle('concluida', c.checked);
+                    if (card._statusSpan) {
+                        card._statusSpan.innerHTML = c.checked
+                            ? '<b>✓ Etapa cumprida</b> · Item verificado no roteiro (' + card._numPts + ').'
+                            : 'Status: <b>Pendente</b> · Execute a ação acima no Packet Tracer e valide a etapa.';
+                    }
+                    if (card._bMarcar) {
+                        if (i < cards.length - 1) {
+                            card._bMarcar.textContent = c.checked ? 'Próxima etapa →' : 'Concluir e avançar →';
+                        } else {
+                            card._bMarcar.textContent = c.checked ? '✓ Etapa final concluída' : 'Concluir laboratório ✓';
+                        }
+                    }
+                }
+                if (pilulas[i]) pilulas[i].classList.toggle('feita', c.checked);
                 if (c.checked) feitos++;
                 salvos[c.dataset.etapa] = c.checked;
+                htmlResumo.push(
+                    '<li class="resumo-item' + (c.checked ? ' cumprido' : '') + '">' +
+                    '<i>' + (c.checked ? '✓' : (i + 1)) + '</i>' +
+                    '<div><b style="display:block;color:var(--tinta)">' + (c.checked ? 'Cumprido: ' : 'Pendente: ') + 'Etapa ' + (i + 1) + '</b>' +
+                    '<span>' + tituloEtapa + '</span></div></li>'
+                );
             });
             try { localStorage.setItem(chave, JSON.stringify(salvos)); } catch (e) { /* sem armazenamento */ }
             var pct = checks.length ? Math.round((feitos / checks.length) * 100) : 0;
             if (barra) barra.style.width = pct + '%';
-            if (txt) txt.textContent = feitos + ' de ' + checks.length + ' etapas concluídas (' + pct + '%)';
+            if (txt) txt.textContent = feitos + ' de ' + checks.length + ' etapas cumpridas (' + pct + '%)';
+            if (resumoLista) resumoLista.innerHTML = htmlResumo.join('');
+            if (resumoContador) resumoContador.textContent = feitos + '/' + checks.length + ' cumpridas · ' + (checks.length - feitos) + ' pendente(s)';
         }
 
         checks.forEach(function (c) {
@@ -530,8 +647,10 @@
             bLimpar.addEventListener('click', function () {
                 checks.forEach(function (c) { c.checked = false; });
                 atualizar();
+                irPara(0);
             });
         }
         atualizar();
+        irPara(0);
     })();
 })();

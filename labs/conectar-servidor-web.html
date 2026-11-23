@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 02 · Conectar-se a um Servidor Web · Redes de Computadores</title>
-    <meta name="description" content="Laboratório guiado (.pka) no Cisco Packet Tracer: configuração de cliente IPv4, gateway padrão, teste ICMP (ping) e requisição HTTP a um servidor Web remoto.">
+    <title>Laboratório 04 · Conectar-se a um Servidor Web · Redes de Computadores</title>
+    <meta name="description" content="Laboratório 04 (.pka) no Cisco Packet Tracer: configuração do PC-Cliente (192.168.1.100), Roteador-Central e conexão HTTP ao Servidor-Web (172.33.100.50).">
     <meta name="theme-color" content="#0a1020">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
     <script>
@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=2026.11.23i">
+    <link rel="stylesheet" href="../style.css?v=2026.11.23j">
 </head>
 <body class="pagina-lab" data-par="marrom">
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
@@ -66,18 +66,18 @@
         <section class="lab-hero">
             <div class="lab-hero-grade">
                 <div>
-                    <p class="etiqueta"><span class="etiqueta-salto">lab 02 · .pka</span><span class="etiqueta-ip">192.168.1.100 → 172.33.100.50</span><span class="etiqueta-nome">cliente e servidor web</span></p>
+                    <p class="etiqueta"><span class="etiqueta-salto">laboratório 04</span><span class="etiqueta-ip">192.168.1.100 → 172.33.100.50</span><span class="etiqueta-nome">cliente e servidor web</span></p>
                     <h1 class="titulo-secao">Conectar-se a um Servidor Web</h1>
-                    <p class="secao-intro">Configure o endereço IPv4, a máscara de sub-rede e o Gateway Padrão do computador cliente (<code>PC0</code>) para que seus pacotes consigam atravessar o roteador Cisco 2811, alcançar a sub-rede remota <code>172.33.100.0/24</code> via <code>ping</code> e carregar a página HTML hospedada no Servidor Web.</p>
+                    <p class="secao-intro">Configure o endereço IPv4, a máscara de sub-rede e o Gateway Padrão do <code>PC-Cliente</code> para que seus pacotes consigam atravessar o <code>Roteador-Central</code> (Cisco 2811), alcançar a sub-rede remota <code>172.33.100.0/24</code> via <code>ping</code> e carregar a página HTML hospedada no <code>Servidor-Web</code>.</p>
                 </div>
 
                 <aside class="cartao-download" aria-label="Download do laboratório Packet Tracer">
-                    <h2>Baixar Laboratório Guiado (.PKA)</h2>
-                    <p>Reescrito com avaliação automática (3 pontos): valida a configuração de IP, máscara e gateway do <code>PC0</code> e exibe a página do Servidor Web traduzida para o português.</p>
-                    <div class="arquivo-nome">Lab_02_Conectar_Servidor_Web.pka <span>3 pts</span></div>
+                    <h2>Baixar Laboratório 04 (.PKA)</h2>
+                    <p>Arquivo <code>.pka</code> com dispositivos e anotações traduzidos para o português (<code>PC-Cliente</code>, <code>Roteador-Central</code> e <code>Servidor-Web</code>), 3 páginas de etapas e correção automática.</p>
+                    <div class="arquivo-nome">Laboratorio_04_Conectar_Servidor_Web.pka <span>3 pts</span></div>
                     <div class="botoes">
-                        <a class="botao botao-cheio" href="./arquivos/Lab_02_Conectar_Servidor_Web.pka" download>Baixar arquivo .PKA</a>
-                        <a class="botao botao-linha" href="#roteiro">Ver etapas visuais</a>
+                        <a class="botao botao-cheio" href="./arquivos/Laboratorio_04_Conectar_Servidor_Web.pka" download>Baixar arquivo .PKA</a>
+                        <a class="botao botao-linha" href="#roteiro">Iniciar etapas</a>
                     </div>
                 </aside>
             </div>
@@ -85,10 +85,10 @@
             <!-- DIAGRAMA PRINCIPAL ANIMADO -->
             <div class="diagrama-caixa">
                 <div class="diagrama-cabeca">
-                    <h3>Rota dos Pacotes · Sub-rede Local (192.168.1.0/24) ↔ Roteador 2811 ↔ Servidor Web (172.33.100.0/24)</h3>
-                    <span>O Gateway Padrão (192.168.1.1) permite que o PC0 envie pacotes para fora de sua rede local</span>
+                    <h3>Diagrama do Laboratório 04 · PC-Cliente (192.168.1.0/24) ↔ Roteador-Central ↔ Servidor-Web (172.33.100.0/24)</h3>
+                    <span>O Gateway Padrão (192.168.1.1) permite que o PC-Cliente envie pacotes para fora de sua rede local</span>
                 </div>
-                <svg class="diagrama-svg" viewBox="0 0 920 220" role="img" aria-label="Diagrama animado mostrando PC0 (192.168.1.100) ligado ao Switch0, que se liga à interface Fa0/1 (192.168.1.1) do Router0 (Cisco 2811), saindo pela Fa0/0 (172.33.100.1) para o Switch1 até o LearnIP Web Server (172.33.100.50)">
+                <svg class="diagrama-svg" viewBox="0 0 920 220" role="img" aria-label="Diagrama animado mostrando PC-Cliente (192.168.1.100) ligado ao Switch0, que se liga à interface Fa0/1 (192.168.1.1) do Roteador-Central, saindo pela Fa0/0 (172.33.100.1) para o Switch1 até o Servidor-Web (172.33.100.50)">
                     <g stroke="#7fd6ff" stroke-width="3" class="cabo-animado">
                         <line x1="170" y1="115" x2="240" y2="115"/>
                         <line x1="360" y1="115" x2="410" y2="115"/>
@@ -102,7 +102,7 @@
                         <text x="40" y="34" fill="#7fd6ff" font-weight="700">SUB-REDE 1 (CLIENTE): 192.168.1.0/24</text>
                         <rect x="20" y="75" width="150" height="80" rx="10" fill="#16213d" stroke="#7fd6ff" stroke-width="1.8"/>
                         <circle cx="155" cy="88" r="4" fill="#7fd39c" class="led-ativo"/>
-                        <text x="32" y="100" font-weight="700" fill="#fff">PC0 (Cliente Web)</text>
+                        <text x="32" y="100" font-weight="700" fill="#fff">PC-Cliente</text>
                         <text x="32" y="120" fill="#7fd6ff">IP: 192.168.1.100</text>
                         <text x="32" y="138" font-size="9.5" fill="#f0a067">GW: 192.168.1.1</text>
 
@@ -112,10 +112,10 @@
 
                         <text x="415" y="34" fill="#f0a067" font-weight="700">ROTEADOR (GATEWAY)</text>
                         <rect x="410" y="68" width="140" height="94" rx="12" fill="#111a30" stroke="#f0a067" stroke-width="2.2"/>
-                        <text x="424" y="92" font-weight="700" fill="#fff">Router0 (2811)</text>
+                        <text x="420" y="92" font-weight="700" fill="#fff">Roteador-Central</text>
                         <text x="420" y="114" font-size="9.5" fill="#7fd6ff">Fa0/1: 192.168.1.1</text>
                         <text x="420" y="132" font-size="9.5" fill="#7fd39c">Fa0/0: 172.33.100.1</text>
-                        <text x="420" y="148" font-size="9" fill="#a3b3cf">Encaminha entre redes</text>
+                        <text x="420" y="148" font-size="9" fill="#a3b3cf">Encaminha pacotes IP</text>
 
                         <text x="615" y="34" fill="#7fd39c" font-weight="700">SUB-REDE 2 (SERVIDOR): 172.33.100.0/24</text>
                         <rect x="600" y="85" width="120" height="60" rx="8" fill="#111a30" stroke="#3b74c9" stroke-width="1.8"/>
@@ -124,7 +124,7 @@
 
                         <rect x="770" y="75" width="135" height="80" rx="10" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
                         <circle cx="890" cy="88" r="4" fill="#7fd39c" class="led-ativo"/>
-                        <text x="780" y="100" font-weight="700" fill="#fff">Servidor Web</text>
+                        <text x="780" y="100" font-weight="700" fill="#fff">Servidor-Web</text>
                         <text x="780" y="120" fill="#7fd39c">IP: 172.33.100.50</text>
                         <text x="780" y="138" font-size="9.5" fill="#a3b3cf">GW: 172.33.100.1</text>
                     </g>
@@ -136,8 +136,7 @@
         <section class="secao">
             <div class="secao-cabeca">
                 <p class="etiqueta"><span class="etiqueta-salto">gabarito</span><span class="etiqueta-ip">3 itens verificados</span><span class="etiqueta-nome">endereçamento</span></p>
-                <h2 class="titulo-secao">Tabela de Endereçamento da Topologia</h2>
-                <p class="secao-intro">O roteador e o servidor Web já estão operacionais. Você configurará os 3 parâmetros de rede do cliente <code>PC0</code>:</p>
+                <h2 class="titulo-secao">Tabela de Endereçamento do Laboratório 04</h2>
             </div>
 
             <div class="tabela-envoltorio">
@@ -153,28 +152,21 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><b>PC0 (Você configura · 3 pts)</b></td>
+                            <td><b>PC-Cliente (Você configura · 3 pts)</b></td>
                             <td><code>FastEthernet0</code></td>
                             <td><code>192.168.1.100</code></td>
                             <td><code>255.255.255.0</code></td>
                             <td><code>192.168.1.1</code></td>
                         </tr>
                         <tr>
-                            <td><b>Router0</b></td>
-                            <td><code>FastEthernet0/1</code> (LAN 1)</td>
-                            <td><code>192.168.1.1</code></td>
+                            <td><b>Roteador-Central</b></td>
+                            <td><code>FastEthernet0/1</code> e <code>0/0</code></td>
+                            <td><code>192.168.1.1</code> / <code>172.33.100.1</code></td>
                             <td><code>255.255.255.0</code></td>
                             <td>—</td>
                         </tr>
                         <tr>
-                            <td><b>Router0</b></td>
-                            <td><code>FastEthernet0/0</code> (LAN 2)</td>
-                            <td><code>172.33.100.1</code></td>
-                            <td><code>255.255.255.0</code></td>
-                            <td>—</td>
-                        </tr>
-                        <tr>
-                            <td><b>LearnIP Web Server</b></td>
+                            <td><b>Servidor-Web</b></td>
                             <td><code>FastEthernet0</code></td>
                             <td><code>172.33.100.50</code></td>
                             <td><code>255.255.255.0</code></td>
@@ -185,22 +177,22 @@
             </div>
         </section>
 
-        <!-- ROTEIRO VISUAL COM ILUSTRAÇÕES DE CADA ETAPA -->
-        <section class="secao" id="roteiro" data-roteiro="lab-02">
+        <!-- ROTEIRO PASSO A PASSO NAVEGÁVEL -->
+        <section class="secao" id="roteiro" data-roteiro="laboratorio-04">
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">orientação visual</span><span class="etiqueta-nome">roteiro guiado</span></p>
-                <h2 class="titulo-secao">Etapas Visuais do Laboratório</h2>
-                <p class="secao-intro">Abra o arquivo <code>Lab_02_Conectar_Servidor_Web.pka</code> no Cisco Packet Tracer e realize as 3 etapas abaixo.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">execução guiada</span><span class="etiqueta-ip">etapa por etapa</span><span class="etiqueta-nome">verificação</span></p>
+                <h2 class="titulo-secao">Avance pelas Etapas do Laboratório 04</h2>
+                <p class="secao-intro">Cada etapa abaixo corresponde a uma das 3 páginas da janela de instruções dentro do arquivo <code>Laboratorio_04_Conectar_Servidor_Web.pka</code>.</p>
             </div>
 
             <div class="progresso-barra-env" aria-live="polite">
                 <div class="progresso-info">
-                    <span id="lab-progresso-texto">0 de 3 etapas concluídas (0%)</span>
+                    <span id="lab-progresso-texto">0 de 3 etapas cumpridas (0%)</span>
                 </div>
                 <div class="progresso-trilho">
                     <div class="progresso-preenchimento" id="lab-progresso-barra"></div>
                 </div>
-                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Desmarcar tudo</button>
+                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Reiniciar progresso</button>
             </div>
 
             <ol class="roteiro-lista">
@@ -209,37 +201,34 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="1">
-                            <span>Configurar o Endereço IPv4, Máscara e Gateway Padrão no PC0</span>
+                            <span>Configurar o Endereço IPv4, Máscara e Gateway Padrão no PC-Cliente</span>
                         </label>
-                        <span class="etapa-num">Etapa 01 · 3 pts (100%)</span>
+                        <span class="etapa-num">Página 1 do .PKA · 3 pts (100%)</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>Clique no computador <b>PC0</b> → selecione a guia <b>Desktop</b> → clique em <b>IP Configuration</b>.</li>
-                                <li>Com a opção <b>Static</b> marcada, preencha:
+                                <li>Clique em <b>PC-Cliente</b> → guia <b>Desktop → IP Configuration</b>.</li>
+                                <li>Em <b>Static</b>, preencha:
                                     <ul>
                                         <li><b>IPv4 Address:</b> <code>192.168.1.100</code></li>
                                         <li><b>Subnet Mask:</b> <code>255.255.255.0</code></li>
                                         <li><b>Default Gateway:</b> <code>192.168.1.1</code></li>
                                     </ul>
                                 </li>
-                                <li>Assim que preencher os 3 campos, o avaliador do Packet Tracer marcará <b>100% (3/3 pontos)</b>!</li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>PC0 · Desktop → IP Configuration</span><b>Completion: 100%</b></div>
+                            <div class="etapa-tela-barra"><span>PC-Cliente · Desktop → IP Configuration</span><b>3/3 Pontos (100%)</b></div>
                             <svg viewBox="0 0 420 155">
                                 <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
                                     <rect x="20" y="16" width="380" height="122" rx="8" fill="#16213d" stroke="#7fd6ff"/>
                                     <text x="34" y="44" fill="#a3b3cf">IPv4 Address:</text>
                                     <rect x="170" y="28" width="210" height="22" rx="4" fill="#0a1122" stroke="#7fd39c"/>
                                     <text x="182" y="43" fill="#7fd39c" font-weight="700">192.168.1.100</text>
-
                                     <text x="34" y="76" fill="#a3b3cf">Subnet Mask:</text>
                                     <rect x="170" y="60" width="210" height="22" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
                                     <text x="182" y="75" fill="#7fd6ff">255.255.255.0</text>
-
                                     <text x="34" y="108" fill="#a3b3cf">Default Gateway:</text>
                                     <rect x="170" y="92" width="210" height="22" rx="4" fill="#0a1122" stroke="#f0a067"/>
                                     <text x="182" y="107" fill="#f0a067" font-weight="700">192.168.1.1</text>
@@ -254,20 +243,20 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="2">
-                            <span>Verificar a conectividade entre as sub-redes com ping 172.33.100.50</span>
+                            <span>Testar a Rota entre as Sub-redes com ping 172.33.100.50</span>
                         </label>
-                        <span class="etapa-num">Etapa 02 · Teste ICMP</span>
+                        <span class="etapa-num">Página 2 do .PKA · Teste ICMP</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>Feche a janela de IP e clique em <b>Command Prompt</b> (Prompt de Comando) no <b>PC0</b>.</li>
+                                <li>Feche a janela de IP e abra o <b>Command Prompt</b> no <b>PC-Cliente</b>.</li>
                                 <li>Digite <code>ping 172.33.100.50</code> e pressione <code>Enter</code>.</li>
-                                <li>Observe que as respostas chegam com <code>TTL=127</code> (o pacote sai do PC0 com TTL=128 e perde 1 unidade ao passar pelo <code>Router0</code>).</li>
+                                <li>Confirme o recebimento das respostas com <code>TTL=127</code> vindas do <b>Servidor-Web</b>.</li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>PC0 · Command Prompt</span><b>ICMP Echo Reply</b></div>
+                            <div class="etapa-tela-barra"><span>PC-Cliente · Command Prompt</span><b>ICMP Echo Reply</b></div>
                             <svg viewBox="0 0 420 155">
                                 <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
                                     <rect x="18" y="16" width="384" height="122" rx="8" fill="#050912" stroke="#26365c"/>
@@ -287,20 +276,20 @@
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="3">
-                            <span>Acessar o Servidor Web pelo Navegador (http://172.33.100.50)</span>
+                            <span>Acessar o Servidor-Web pelo Navegador (172.33.100.50) e Conferir Assessment Items</span>
                         </label>
-                        <span class="etapa-num">Etapa 03 · Teste HTTP</span>
+                        <span class="etapa-num">Página 3 do .PKA · Teste HTTP</span>
                     </div>
                     <div class="etapa-grade">
                         <div class="etapa-corpo">
                             <ol>
-                                <li>Feche o Prompt de Comando e clique em <b>Web Browser</b> na guia <b>Desktop</b> do <b>PC0</b>.</li>
-                                <li>Digite <code>172.33.100.50</code> no campo <b>URL</b> e clique em <b>Go</b>.</li>
-                                <li>Veja a página em português ser carregada diretamente do servidor remoto!</li>
+                                <li>Abra o <b>Web Browser</b> na guia <b>Desktop</b> do <b>PC-Cliente</b>.</li>
+                                <li>Digite <code>172.33.100.50</code> na barra de <b>URL</b> e clique em <b>Go</b>.</li>
+                                <li>Clique em <b>Check Results → Assessment Items</b> na janela da atividade para conferir os 3 itens verdes cumpridos!</li>
                             </ol>
                         </div>
                         <div class="etapa-tela" aria-hidden="true">
-                            <div class="etapa-tela-barra"><span>PC0 · Web Browser</span><b>http://172.33.100.50</b></div>
+                            <div class="etapa-tela-barra"><span>PC-Cliente · Web Browser</span><b>3/3 Cumpridos (100%)</b></div>
                             <svg viewBox="0 0 420 155">
                                 <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
                                     <rect x="18" y="16" width="384" height="122" rx="8" fill="#16213d" stroke="#7fd39c"/>
@@ -309,10 +298,9 @@
                                     <text x="76" y="38" fill="#7fd6ff" font-weight="700">http://172.33.100.50</text>
                                     <rect x="344" y="23" width="44" height="22" rx="4" fill="#7fd39c"/>
                                     <text x="358" y="38" fill="#08101f" font-weight="700">Go</text>
-
                                     <rect x="30" y="54" width="358" height="72" rx="6" fill="#0a1122" stroke="#26365c"/>
                                     <text x="48" y="82" font-size="11.5" font-weight="700" fill="#7fd6ff">Bem-vindo ao Servidor Web de Redes - IFPA</text>
-                                    <text x="48" y="106" font-size="9" fill="#a3b3cf">Conexão estabelecida com sucesso via 172.33.100.50!</text>
+                                    <text x="48" y="106" font-size="9" fill="#7fd39c">✓ Conexão estabelecida via 172.33.100.50 (100%)</text>
                                 </g>
                             </svg>
                         </div>
@@ -323,26 +311,26 @@
 
         <!-- NAVEGAÇÃO ENTRE OS 5 LABORATÓRIOS -->
         <section class="secao">
-            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer (.PKA)</h3>
+            <h3 class="subtitulo">Laboratórios Cisco Packet Tracer (01 a 05)</h3>
             <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
                 <a class="lab-nav-item" href="./rede-fisica-local.html" data-par="azul">
-                    <small>Prática 01 · .PKA</small>
+                    <small>Laboratório 01 · .PKA</small>
                     <b>Criação de Rede Física Local</b>
                 </a>
                 <a class="lab-nav-item" href="./rede-wan-dns-web.html" data-par="verde">
-                    <small>Prática 02 · .PKA</small>
+                    <small>Laboratório 02 · .PKA</small>
                     <b>Rede WAN Completa (DNS + Web)</b>
                 </a>
                 <a class="lab-nav-item" href="./roteador-sem-fio.html" data-par="laranja">
-                    <small>Lab 01 · .PKA</small>
+                    <small>Laboratório 03 · .PKA</small>
                     <b>Configurar Roteador Sem Fio e Clientes</b>
                 </a>
                 <a class="lab-nav-item" href="./conectar-servidor-web.html" aria-current="page" data-par="marrom">
-                    <small>Lab 02 · .PKA</small>
+                    <small>Laboratório 04 · .PKA</small>
                     <b>Conectar-se a um Servidor Web</b>
                 </a>
                 <a class="lab-nav-item" href="./configurar-dhcp-wireless.html" data-par="azul">
-                    <small>Lab 03 · .PKA</small>
+                    <small>Laboratório 05 · .PKA</small>
                     <b>Configuração de DHCP em Roteador Wireless</b>
                 </a>
             </nav>
@@ -369,10 +357,10 @@
                 <div><dt>Disciplina</dt><dd>TIINF1647 · 67 h</dd></div>
             </dl>
         </div>
-        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · LAB 02 · CONECTAR-SE A UM SERVIDOR WEB</p>
+        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · LABORATÓRIO 04 · CONECTAR-SE A UM SERVIDOR WEB</p>
     </footer>
 
-    <script src="../logica.js?v=2026.11.23i"></script>
-    <script src="../script.js?v=2026.11.23i"></script>
+    <script src="../logica.js?v=2026.11.23j"></script>
+    <script src="../script.js?v=2026.11.23j"></script>
 </body>
 </html>
