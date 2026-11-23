@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratório 03 · Configurar um Roteador Sem Fio e Clientes · Redes de Computadores</title>
-    <meta name="description" content="Laboratório 03 (.pka) no Cisco Packet Tracer: Divisor-Coaxial, Modem-a-Cabo, Roteador-Sem-Fio, PC-Escritorio, PC-Quarto e Notebook-Sala.">
+    <meta name="description" content="Laboratório 03 no Cisco Packet Tracer: Divisor-Coaxial, Modem-a-Cabo, Roteador-Sem-Fio, PC-Escritorio, PC-Quarto e Notebook-Sala.">
     <meta name="theme-color" content="#0a1020">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
     <script>
@@ -72,9 +72,9 @@
                 </div>
 
                 <aside class="cartao-download" aria-label="Download do laboratório Packet Tracer">
-                    <h2>Baixar Laboratório 03 (.PKA)</h2>
-                    <p>Todos os rótulos da planta residencial e nomes de dispositivos traduzidos para o português (sem tags HTML quebradas), dividido em 4 páginas de etapas com 19 itens verificados.</p>
-                    <div class="arquivo-nome">Laboratorio_03_Roteador_Sem_Fio_e_Clientes.pka</div>
+                    <h2>Baixar Laboratório 03</h2>
+                    <p>Todos os rótulos da planta residencial e nomes de dispositivos traduzidos para o português (sem tags HTML quebradas), dividido em 4 etapas guiadas com 19 itens verificados.</p>
+                    <div class="arquivo-nome">Laboratorio_03_Roteador_Sem_Fio_e_Clientes</div>
                     <div class="botoes">
                         <a class="botao botao-cheio" href="./arquivos/Laboratorio_03_Roteador_Sem_Fio_e_Clientes.pka" download>Baixar arquivo</a>
                         <a class="botao botao-linha" href="#roteiro">Iniciar etapas</a>
@@ -147,8 +147,8 @@
         <!-- TABELA DE AVALIAÇÃO AUTOMÁTICA -->
         <section class="secao">
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="etiqueta-salto">gabarito</span><span class="etiqueta-ip">19 itens verificados</span><span class="etiqueta-nome">pontuação</span></p>
-                <h2 class="titulo-secao">Itens Avaliados no Laboratório 03 (.PKA)</h2>
+                <p class="etiqueta"><span class="etiqueta-salto">gabarito</span><span class="etiqueta-ip">19 itens verificados</span><span class="etiqueta-nome">configuração</span></p>
+                <h2 class="titulo-secao">Itens Avaliados no Laboratório 03</h2>
             </div>
 
             <div class="tabela-envoltorio">
@@ -158,7 +158,6 @@
                             <th>Equipamento</th>
                             <th>Parâmetro Avaliado</th>
                             <th>Configuração Exigida</th>
-                            <th>Pontos</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,37 +165,31 @@
                             <td><b>Divisor-Coaxial</b></td>
                             <td>Portas <code>Coaxial1</code> e <code>Coaxial2</code></td>
                             <td>Cabo Coaxial em <b>Modem-a-Cabo</b> (<code>Port 0</code>) e <b>Televisao</b> (<code>Port 0</code>)</td>
-                            <td>4 pts</td>
                         </tr>
                         <tr>
                             <td><b>Roteador-Sem-Fio</b></td>
                             <td>Porta <code>Internet</code> (WAN)</td>
                             <td>Cabo Direto ligado à <code>Port 1</code> do <b>Modem-a-Cabo</b></td>
-                            <td>2 pts</td>
                         </tr>
                         <tr>
                             <td><b>PC-Escritorio</b> e <b>PC-Quarto</b></td>
                             <td>Portas <code>FastEthernet0</code> + DHCP</td>
                             <td>Ligados em <code>GigabitEthernet 1</code> e <code>2</code> + Modo <b>DHCP</b> ativo</td>
-                            <td>4 pts</td>
                         </tr>
                         <tr>
                             <td><b>Roteador-Sem-Fio</b></td>
                             <td>DHCP e Senha Admin</td>
                             <td>Maximum Users = <code>10</code> · Router Password = <code>MyPassword1!</code></td>
-                            <td>2 pts</td>
                         </tr>
                         <tr>
                             <td><b>Roteador-Sem-Fio</b></td>
                             <td>Wireless 2,4 GHz + Segurança</td>
                             <td>SSID = <code>MyHome</code> · <code>WPA2 Personal</code> (AES) · Senha = <code>MyPassPhrase1!</code></td>
-                            <td>4 pts</td>
                         </tr>
                         <tr>
                             <td><b>Notebook-Sala</b></td>
                             <td>Interface <code>Wireless0</code></td>
                             <td>Conectado ao SSID <code>MyHome</code> com a senha <code>MyPassPhrase1!</code></td>
-                            <td>3 pts</td>
                         </tr>
                     </tbody>
                 </table>
@@ -208,7 +201,7 @@
             <div class="secao-cabeca">
                 <p class="etiqueta"><span class="etiqueta-salto">execução guiada</span><span class="etiqueta-ip">etapa por etapa</span><span class="etiqueta-nome">verificação</span></p>
                 <h2 class="titulo-secao">Avance pelas Etapas do Laboratório 03</h2>
-                <p class="secao-intro">Cada etapa abaixo corresponde a uma das 4 páginas da janela de instruções dentro do arquivo <code>Laboratorio_03_Roteador_Sem_Fio_e_Clientes.pka</code>.</p>
+                <p class="secao-intro">Cada etapa abaixo corresponde a uma das 4 páginas da janela de instruções dentro do laboratório no Cisco Packet Tracer.</p>
             </div>
 
             <div class="progresso-barra-env" aria-live="polite">
@@ -382,23 +375,23 @@
             <h3 class="subtitulo">Laboratórios Cisco Packet Tracer (01 a 05)</h3>
             <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
                 <a class="lab-nav-item" href="./rede-fisica-local.html" data-par="azul">
-                    <small>Laboratório 01 · .PKA</small>
+                    <small>Laboratório 01</small>
                     <b>Criação de Rede Física Local</b>
                 </a>
                 <a class="lab-nav-item" href="./rede-wan-dns-web.html" data-par="verde">
-                    <small>Laboratório 02 · .PKA</small>
+                    <small>Laboratório 02</small>
                     <b>Rede WAN Completa (DNS + Web)</b>
                 </a>
                 <a class="lab-nav-item" href="./roteador-sem-fio.html" aria-current="page" data-par="laranja">
-                    <small>Laboratório 03 · .PKA</small>
+                    <small>Laboratório 03</small>
                     <b>Configurar Roteador Sem Fio e Clientes</b>
                 </a>
                 <a class="lab-nav-item" href="./conectar-servidor-web.html" data-par="marrom">
-                    <small>Laboratório 04 · .PKA</small>
+                    <small>Laboratório 04</small>
                     <b>Conectar-se a um Servidor Web</b>
                 </a>
                 <a class="lab-nav-item" href="./configurar-dhcp-wireless.html" data-par="azul">
-                    <small>Laboratório 05 · .PKA</small>
+                    <small>Laboratório 05</small>
                     <b>Configuração de DHCP em Roteador Wireless</b>
                 </a>
             </nav>
