@@ -699,8 +699,6 @@ html[data-visitado] .t-sublinha::after { animation-delay: .9s; }
 .lab-meta b { color: var(--par, var(--fibra)); font-weight: 500; }
 
 .cartao-download { background: linear-gradient(145deg, color-mix(in srgb, var(--par, var(--fibra)) 16%, var(--cartao)), var(--cartao) 68%); border: 1.5px solid color-mix(in srgb, var(--par, var(--fibra)) 45%, var(--linha-forte)); border-radius: var(--raio); padding: 24px; box-shadow: var(--sombra); display: grid; gap: 12px; }
-.cartao-download-selo { font-family: var(--fonte-mono); font-size: .78rem; color: var(--par, var(--fibra)); text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; }
-.cartao-download-selo::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
 .cartao-download h2 { font-size: 1.3rem; }
 .cartao-download p { color: var(--tinta-suave); font-size: .95rem; }
 .cartao-download .arquivo-nome { font-family: var(--fonte-mono); font-size: .85rem; padding: 8px 12px; border-radius: 10px; background: var(--cartao-2); border: 1px solid var(--linha); color: var(--tinta); overflow-wrap: anywhere; }
