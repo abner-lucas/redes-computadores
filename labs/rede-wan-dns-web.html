@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prática 02 · Rede WAN com Servidor DNS e Web · Redes de Computadores</title>
-    <meta name="description" content="Laboratório prático de Rede WAN no Cisco Packet Tracer: anel de 5 roteadores em fibra óptica com roteamento RIP, Servidor DNS, Servidor Web HTTP, roteadores residenciais NAT/DHCP e clientes.">
+    <meta name="description" content="Laboratório guiado (.pka) no Cisco Packet Tracer: anel de 5 roteadores em fibra óptica com roteamento RIP, Servidor DNS, Servidor Web HTTP, roteadores residenciais NAT/DHCP e clientes.">
     <meta name="theme-color" content="#0a1020">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
     <script>
@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=2026.11.23h">
+    <link rel="stylesheet" href="../style.css?v=2026.11.23i">
 </head>
 <body class="pagina-lab" data-par="verde">
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
@@ -63,41 +63,34 @@
     </header>
 
     <main id="conteudo">
-        <!-- HERO E DOWNLOAD -->
         <section class="lab-hero">
             <div class="lab-hero-grade">
                 <div>
                     <p class="etiqueta"><span class="etiqueta-salto">prática 02</span><span class="etiqueta-ip">11.0.0.0/8 → 99.0.0.0/8</span><span class="etiqueta-nome">rede WAN (DNS + Web)</span></p>
                     <h1 class="titulo-secao">Criação de Rede WAN com Servidor Web e DNS</h1>
-                    <p class="secao-intro">Construção de uma infraestrutura completa de provedor (WAN) interligando 9 sub-redes Classe A (<code>11.0.0.0/8</code> a <code>99.0.0.0/8</code>) com um anel de 5 roteadores em fibra óptica usando protocolo RIP, um Servidor DNS traduzindo o domínio <code>abner.com.br</code>, um Servidor Web HTTP e duas redes domésticas com roteadores Wi-Fi e DHCP.</p>
-                    <ul class="lab-meta">
-                        <li><b>5</b> Roteadores (Fibra + RIP)</li>
-                        <li><b>2</b> Servidores (DNS + HTTP)</li>
-                        <li><b>2</b> Switches de Borda</li>
-                        <li><b>2</b> Roteadores Residenciais + <b>2</b> PCs</li>
-                    </ul>
+                    <p class="secao-intro">Infraestrutura de provedor (WAN) interligando 9 redes Classe A (<code>11.0.0.0/8</code> a <code>99.0.0.0/8</code>) através de um anel de 5 roteadores em fibra óptica com roteamento dinâmico RIP, Servidor DNS respondendo pelo domínio <code>abner.com.br</code>, Servidor Web HTTP e duas redes residenciais com DHCP.</p>
                 </div>
 
-                <aside class="cartao-download" aria-label="Download do arquivo Packet Tracer">
-                    <h2>Baixar Rede Completa (DNS + Web)</h2>
-                    <p>Arquivo revisado via engenharia reversa: todos os dispositivos traduzidos para o português e DNS <code>99.1.1.1</code> corrigido em ambos os roteadores residenciais (Casa 1 e Casa 2).</p>
-                    <div class="arquivo-nome">Pratica_02_Rede_WAN_DNS_e_Web.pkt</div>
+                <aside class="cartao-download" aria-label="Download do laboratório Packet Tracer">
+                    <h2>Baixar Laboratório Guiado (.PKA)</h2>
+                    <p>O anel de fibra óptica já vem montado para evitar repetição mecânica. O laboratório guia você na ativação do Servidor DNS, Servidor Web, DHCP residencial e clientes (10 pontos).</p>
+                    <div class="arquivo-nome">Pratica_02_Rede_WAN_DNS_e_Web.pka <span>10 pts</span></div>
                     <div class="botoes">
-                        <a class="botao botao-cheio" href="./arquivos/Pratica_02_Rede_WAN_DNS_e_Web.pkt" download>Baixar arquivo .PKT</a>
-                        <a class="botao botao-linha" href="#roteiro">Seguir passo a passo</a>
+                        <a class="botao botao-cheio" href="./arquivos/Pratica_02_Rede_WAN_DNS_e_Web.pka" download>Baixar arquivo .PKA</a>
+                        <a class="botao botao-linha" href="#roteiro">Ver etapas visuais</a>
                     </div>
                 </aside>
             </div>
 
-            <!-- DIAGRAMA SVG DA REDE WAN COMPLETA -->
+            <!-- DIAGRAMA PRINCIPAL ANIMADO DA REDE WAN -->
             <div class="diagrama-caixa">
                 <div class="diagrama-cabeca">
-                    <h3>Diagrama de Topologia Lógica · Anel de Fibra Óptica (RIP) + Bordas DNS, Web e Residenciais</h3>
-                    <span>Linhas Laranjas = Fibra Óptica | Linhas Azuis = Cabo Par Trançado Direto</span>
+                    <h3>Topologia da Rede WAN · Anel de Fibra Óptica (RIP) + Bordas DNS, Web e Residenciais</h3>
+                    <span>Laranja Animado = Fibra Óptica (100BASE-FX) · Azul = Cabo Par Trançado Direto</span>
                 </div>
-                <svg class="diagrama-svg" viewBox="0 0 960 420" role="img" aria-label="Diagrama da Rede WAN com Servidor-DNS na rede 99.0.0.0/8, Servidor-Web na rede 88.0.0.0/8, anel central de 5 roteadores interligados por fibra óptica nas redes 22, 33, 44, 55 e 66, e duas redes residenciais nas redes 11 e 77">
-                    <!-- Enlaces de Fibra Óptica (Laranja) -->
-                    <g stroke="#f0a067" stroke-width="3">
+                <svg class="diagrama-svg" viewBox="0 0 960 420" role="img" aria-label="Diagrama animado da Rede WAN com Servidor-DNS na rede 99.0.0.0/8, Servidor-Web na rede 88.0.0.0/8, anel central de 5 roteadores interligados por fibra óptica nas redes 22, 33, 44, 55 e 66, e duas redes residenciais nas redes 11 e 77">
+                    <!-- Enlaces de Fibra Óptica Animados (Laranja) -->
+                    <g stroke="#f0a067" stroke-width="3.2" class="cabo-animado">
                         <line x1="380" y1="85" x2="580" y2="85"/>
                         <line x1="330" y1="115" x2="330" y2="230"/>
                         <line x1="630" y1="115" x2="630" y2="230"/>
@@ -106,7 +99,7 @@
                     </g>
 
                     <!-- Enlaces de Par Trançado Direto (Azul) -->
-                    <g stroke="#7fd6ff" stroke-width="2.2">
+                    <g stroke="#7fd6ff" stroke-width="2.4">
                         <line x1="115" y1="85" x2="185" y2="85"/>
                         <line x1="245" y1="85" x2="285" y2="85"/>
                         <line x1="675" y1="85" x2="715" y2="85"/>
@@ -117,10 +110,10 @@
                         <line x1="805" y1="280" x2="805" y2="345"/>
                     </g>
 
-                    <!-- Rótulos das Redes e Blocos -->
                     <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#e8eef8">
                         <!-- Rede 99 DNS -->
                         <rect x="20" y="55" width="95" height="60" rx="8" fill="#16213d" stroke="#7fd6ff" stroke-width="1.8"/>
+                        <circle cx="103" cy="67" r="3.5" fill="#7fd39c" class="led-ativo"/>
                         <text x="28" y="78" font-weight="700" fill="#fff">Servidor-DNS</text>
                         <text x="28" y="96" fill="#7fd39c">99.1.1.1/8</text>
                         <rect x="185" y="65" width="60" height="40" rx="6" fill="#111a30" stroke="#3b74c9"/>
@@ -143,6 +136,7 @@
                         <rect x="715" y="65" width="60" height="40" rx="6" fill="#111a30" stroke="#3b74c9"/>
                         <text x="723" y="89" font-size="10">Sw-Web</text>
                         <rect x="845" y="55" width="95" height="60" rx="8" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
+                        <circle cx="928" cy="67" r="3.5" fill="#7fd39c" class="led-ativo"/>
                         <text x="853" y="78" font-weight="700" fill="#fff">Servidor-Web</text>
                         <text x="853" y="96" fill="#7fd39c">88.2.2.2/8</text>
                         <text x="735" y="42" fill="#7fd39c" font-weight="700">Rede 88.0.0.0/8</text>
@@ -180,7 +174,7 @@
                         <text x="770" y="367" font-weight="700" fill="#fff">PC-Casa-2</text>
                         <text x="762" y="383" font-size="9.5" fill="#7fd39c">DHCP 192.168.0.x</text>
 
-                        <!-- Rótulos dos enlaces de fibra -->
+                        <!-- Rótulos das Redes -->
                         <text x="445" y="74" fill="#f0a067" font-weight="700">55.0.0.0/8</text>
                         <text x="245" y="175" fill="#f0a067" font-weight="700">44.0.0.0/8</text>
                         <text x="640" y="175" fill="#f0a067" font-weight="700">66.0.0.0/8</text>
@@ -193,77 +187,70 @@
             </div>
         </section>
 
-        <!-- TABELA DE CONFIGURAÇÃO DOS 5 ROTEADORES -->
+        <!-- TABELA DO NÚCLEO DE ROTEADORES E SERVIÇOS -->
         <section class="secao">
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="etiqueta-salto">engenharia reversa</span><span class="etiqueta-ip">roteamento RIP</span><span class="etiqueta-nome">tabela de roteadores</span></p>
-                <h2 class="titulo-secao">Tabela de Interfaces e Roteamento RIP</h2>
-                <p class="secao-intro">Todos os 5 roteadores do núcleo são do modelo <code>Router-PT</code> e foram configurados 100% pela aba visual <b>Config</b> (marcando a caixa <code>Port Status: On</code> e adicionando as redes em <b>ROUTING → RIP</b>).</p>
+                <p class="etiqueta"><span class="etiqueta-salto">gabarito</span><span class="etiqueta-ip">10 itens verificados</span><span class="etiqueta-nome">serviços e roteamento</span></p>
+                <h2 class="titulo-secao">Parâmetros Avaliados no Laboratório (.PKA)</h2>
+                <p class="secao-intro">O núcleo de 5 roteadores já está configurado com o protocolo RIP. Para atingir 100% no arquivo <code>.pka</code>, configure os parâmetros abaixo:</p>
             </div>
 
             <div class="tabela-envoltorio">
                 <table class="tabela">
                     <thead>
                         <tr>
-                            <th>Roteador</th>
-                            <th>Porta FastEthernet0/0 (Cobre)</th>
-                            <th>Porta FastEthernet4/0 (Fibra)</th>
-                            <th>Porta FastEthernet5/0 (Fibra)</th>
-                            <th>Redes no RIP (Aba Config → RIP)</th>
+                            <th>Equipamento</th>
+                            <th>Endereço IPv4 / Máscara</th>
+                            <th>Gateway Padrão</th>
+                            <th>Configuração de Serviço / Cliente</th>
+                            <th>Pontos</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><b>Roteador-0</b></td>
-                            <td><code>11.2.2.2</code> (→ Roteador-Casa-1)</td>
-                            <td><code>22.1.1.1</code> (→ Roteador-1)</td>
-                            <td><code>44.1.1.1</code> (→ Roteador-3)</td>
-                            <td><code>11.0.0.0</code>, <code>22.0.0.0</code>, <code>44.0.0.0</code></td>
+                            <td><b>Servidor-DNS</b></td>
+                            <td><code>99.1.1.1</code> / <code>255.0.0.0</code></td>
+                            <td><code>99.2.2.2</code></td>
+                            <td>Aba <b>Services → DNS</b>: Ativar (<b>On</b>) · <code>abner.com.br</code> → <code>88.2.2.2</code></td>
+                            <td>4 pts</td>
                         </tr>
                         <tr>
-                            <td><b>Roteador-1</b></td>
-                            <td><em>Desligada</em></td>
-                            <td><code>22.2.2.2</code> (→ Roteador-0)</td>
-                            <td><code>33.1.1.1</code> (→ Roteador-2)</td>
-                            <td><code>22.0.0.0</code>, <code>33.0.0.0</code></td>
+                            <td><b>Servidor-Web</b></td>
+                            <td><code>88.2.2.2</code> / <code>255.0.0.0</code></td>
+                            <td><code>88.1.1.1</code></td>
+                            <td>Aba <b>Services → HTTP</b>: Ativo com página HTML personalizada</td>
+                            <td>3 pts</td>
                         </tr>
                         <tr>
-                            <td><b>Roteador-2</b></td>
-                            <td><code>77.1.1.1</code> (→ Roteador-Casa-2)</td>
-                            <td><code>66.1.1.1</code> (→ Roteador-4)</td>
-                            <td><code>33.2.2.2</code> (→ Roteador-1)</td>
-                            <td><code>33.0.0.0</code>, <code>66.0.0.0</code>, <code>77.0.0.0</code></td>
+                            <td><b>Roteador-Casa-2</b></td>
+                            <td>WAN: <code>77.2.2.2</code> / <code>255.0.0.0</code></td>
+                            <td><code>77.1.1.1</code></td>
+                            <td>Aba <b>GUI</b>: definir <b>Static DNS 1</b> = <code>99.1.1.1</code> e salvar</td>
+                            <td>1 pt</td>
                         </tr>
                         <tr>
-                            <td><b>Roteador-3</b></td>
-                            <td><code>99.2.2.2</code> (→ Switch-DNS)</td>
-                            <td><code>55.1.1.1</code> (→ Roteador-4)</td>
-                            <td><code>44.2.2.2</code> (→ Roteador-0)</td>
-                            <td><code>44.0.0.0</code>, <code>55.0.0.0</code>, <code>99.0.0.0</code></td>
-                        </tr>
-                        <tr>
-                            <td><b>Roteador-4</b></td>
-                            <td><code>88.1.1.1</code> (→ Switch-Web)</td>
-                            <td><code>55.2.2.2</code> (→ Roteador-3)</td>
-                            <td><code>66.2.2.2</code> (→ Roteador-2)</td>
-                            <td><code>55.0.0.0</code>, <code>66.0.0.0</code>, <code>88.0.0.0</code></td>
+                            <td><b>PC-Casa-1</b> e <b>PC-Casa-2</b></td>
+                            <td><code>192.168.0.100</code> (via DHCP)</td>
+                            <td><code>192.168.0.1</code></td>
+                            <td>Aba <b>Desktop → IP Configuration</b>: mudar para <b>DHCP</b></td>
+                            <td>2 pts</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- ROTEIRO PASSO A PASSO COM CHECKLIST -->
+        <!-- ROTEIRO VISUAL COM ILUSTRAÇÕES DE CADA ETAPA -->
         <section class="secao" id="roteiro" data-roteiro="pratica-02">
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">abas Config, Services e GUI</span><span class="etiqueta-nome">guia prático</span></p>
-                <h2 class="titulo-secao">Roteiro Guiado de Configuração (Sem Código CLI)</h2>
-                <p class="secao-intro">Siga as 6 etapas abaixo clicando apenas nas abas visuais do Packet Tracer.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">orientação visual</span><span class="etiqueta-nome">roteiro guiado</span></p>
+                <h2 class="titulo-secao">Etapas Visuais do Laboratório</h2>
+                <p class="secao-intro">Abra o arquivo <code>Pratica_02_Rede_WAN_DNS_e_Web.pka</code> no Cisco Packet Tracer e siga as 4 etapas ilustradas abaixo.</p>
             </div>
 
             <div class="progresso-barra-env" aria-live="polite">
                 <div class="progresso-info">
-                    <span id="lab-progresso-texto">0 de 6 etapas concluídas (0%)</span>
+                    <span id="lab-progresso-texto">0 de 4 etapas concluídas (0%)</span>
                 </div>
                 <div class="progresso-trilho">
                     <div class="progresso-preenchimento" id="lab-progresso-barra"></div>
@@ -272,121 +259,157 @@
             </div>
 
             <ol class="roteiro-lista">
+                <!-- ETAPA 1 -->
                 <li class="etapa-card">
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="1">
-                            <span>Posicionar os 13 Dispositivos e conectar os Cabos de Fibra e Cobre</span>
+                            <span>Configurar o IP do Servidor-DNS (99.1.1.1) e ativar o Serviço DNS</span>
                         </label>
-                        <span class="etapa-num">Etapa 01</span>
+                        <span class="etapa-num">Etapa 01 · 4 pts</span>
                     </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Insira <b>5 roteadores <code>Router-PT</code></b> no centro formando um pentágono, <b>2 switches <code>Switch-PT</code></b> nos cantos superiores, <b>2 servidores <code>Server-PT</code></b> nas pontas superiores (<code>Servidor-DNS</code> à esquerda e <code>Servidor-Web</code> à direita), <b>2 roteadores sem fio <code>HomeRouter-PT-AC</code></b> nas laterais inferiores e <b>2 computadores <code>PC-PT</code></b> abaixo deles.</li>
-                            <li>Em <b>Connections (⚡)</b>, selecione o cabo laranja <b>Fiber</b> (Fibra Óptica) e interligue as portas <code>FastEthernet4/0</code> e <code>FastEthernet5/0</code> entre os 5 roteadores conforme o diagrama acima.</li>
-                            <li>Selecione o cabo preto <b>Copper Straight-Through</b> e ligue as portas <code>FastEthernet0/0</code> dos roteadores de borda aos switches e à porta <b>Internet</b> dos roteadores residenciais.</li>
-                        </ol>
+                    <div class="etapa-grade">
+                        <div class="etapa-corpo">
+                            <ol>
+                                <li>Clique no <b>Servidor-DNS</b> (canto superior esquerdo) → aba <b>Desktop</b> → <b>IP Configuration</b>.</li>
+                                <li>Preencha <b>IPv4 Address:</b> <code>99.1.1.1</code>, <b>Subnet Mask:</b> <code>255.0.0.0</code> e <b>Default Gateway:</b> <code>99.2.2.2</code>.</li>
+                                <li>Mude para a aba <b>Services</b> → clique em <b>DNS</b> no menu lateral esquerdo e marque <b>DNS Service: On</b> (os registros <code>abner.com.br</code> e <code>www.abner.com.br</code> apontando para <code>88.2.2.2</code> já estão listados).</li>
+                            </ol>
+                        </div>
+                        <div class="etapa-tela" aria-hidden="true">
+                            <div class="etapa-tela-barra"><span>Servidor-DNS · Desktop &amp; Services</span><b>DNS Service: ON</b></div>
+                            <svg viewBox="0 0 420 165">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#e8eef8">
+                                    <rect x="16" y="16" width="182" height="132" rx="8" fill="#16213d" stroke="#7fd6ff"/>
+                                    <text x="28" y="36" font-weight="700" fill="#fff">IP Configuration</text>
+                                    <text x="28" y="60" fill="#a3b3cf">IP: <tspan fill="#7fd39c" font-weight="700">99.1.1.1</tspan></text>
+                                    <text x="28" y="82" fill="#a3b3cf">Mask: <tspan fill="#7fd6ff">255.0.0.0</tspan></text>
+                                    <text x="28" y="104" fill="#a3b3cf">GW: <tspan fill="#f0a067" font-weight="700">99.2.2.2</tspan></text>
+
+                                    <rect x="212" y="16" width="192" height="132" rx="8" fill="#16213d" stroke="#7fd39c"/>
+                                    <text x="224" y="36" font-weight="700" fill="#fff">Services → DNS</text>
+                                    <circle cx="232" cy="56" r="5" fill="#7fd39c" class="led-ativo"/><text x="244" y="60" fill="#7fd39c" font-weight="700">DNS Service: On</text>
+                                    <rect x="224" y="72" width="168" height="62" rx="4" fill="#0a1122" stroke="#26365c"/>
+                                    <text x="230" y="90" font-size="9" fill="#fff">abner.com.br (A)</text>
+                                    <text x="230" y="106" font-size="9" fill="#7fd39c">→ 88.2.2.2</text>
+                                    <text x="230" y="124" font-size="9" fill="#a3b3cf">www.abner.com.br (CNAME)</text>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </li>
 
+                <!-- ETAPA 2 -->
                 <li class="etapa-card">
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="2">
-                            <span>Configurar os IPs das Interfaces nos 5 Roteadores pela aba Config</span>
+                            <span>Configurar o Endereço IP e Gateway do Servidor-Web (88.2.2.2)</span>
                         </label>
-                        <span class="etapa-num">Etapa 02</span>
+                        <span class="etapa-num">Etapa 02 · 3 pts</span>
                     </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Clique em cada roteador (<code>Roteador-0</code> a <code>Roteador-4</code>) e abra a aba <b>Config</b>.</li>
-                            <li>No menu lateral esquerdo (em <em>INTERFACE</em>), clique nas interfaces conectadas (<code>FastEthernet0/0</code>, <code>FastEthernet4/0</code> e <code>FastEthernet5/0</code>).</li>
-                            <li>Marque a caixa <b>Port Status: [x] On</b> e digite o endereço IPv4 correspondente da tabela acima (a máscara Classe A <code>255.0.0.0</code> é preenchida automaticamente).</li>
-                        </ol>
+                    <div class="etapa-grade">
+                        <div class="etapa-corpo">
+                            <ol>
+                                <li>Clique no <b>Servidor-Web</b> (canto superior direito) → aba <b>Desktop</b> → <b>IP Configuration</b>.</li>
+                                <li>Preencha <b>IPv4 Address:</b> <code>88.2.2.2</code>, <b>Subnet Mask:</b> <code>255.0.0.0</code> e <b>Default Gateway:</b> <code>88.1.1.1</code> (porta do <code>Roteador-4</code>).</li>
+                                <li>Na aba <b>Services → HTTP</b>, o serviço Web já está ativo com o arquivo <code>index.html</code> personalizado.</li>
+                            </ol>
+                        </div>
+                        <div class="etapa-tela" aria-hidden="true">
+                            <div class="etapa-tela-barra"><span>Servidor-Web · Rede 88.0.0.0/8</span><b>HTTP Server: ON</b></div>
+                            <svg viewBox="0 0 420 155">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
+                                    <rect x="20" y="18" width="380" height="120" rx="8" fill="#16213d" stroke="#7fd39c" stroke-width="1.5"/>
+                                    <text x="34" y="42" font-weight="700" fill="#fff">Servidor-Web · IP Configuration</text>
+                                    <text x="34" y="70" fill="#a3b3cf">IPv4 Address:</text>
+                                    <rect x="165" y="54" width="215" height="22" rx="4" fill="#0a1122" stroke="#7fd39c"/>
+                                    <text x="177" y="69" fill="#7fd39c" font-weight="700">88.2.2.2</text>
+
+                                    <text x="34" y="98" fill="#a3b3cf">Subnet Mask:</text>
+                                    <rect x="165" y="82" width="215" height="22" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
+                                    <text x="177" y="97" fill="#7fd6ff">255.0.0.0</text>
+
+                                    <text x="34" y="126" fill="#a3b3cf">Default Gateway:</text>
+                                    <rect x="165" y="110" width="215" height="22" rx="4" fill="#0a1122" stroke="#f0a067"/>
+                                    <text x="177" y="125" fill="#f0a067" font-weight="700">88.1.1.1</text>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </li>
 
+                <!-- ETAPA 3 -->
                 <li class="etapa-card">
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="3">
-                            <span>Ativar o Roteamento Dinâmico RIP nos 5 Roteadores</span>
+                            <span>Definir o Static DNS 1 (99.1.1.1) no DHCP do Roteador-Casa-2</span>
                         </label>
-                        <span class="etapa-num">Etapa 03</span>
+                        <span class="etapa-num">Etapa 03 · 1 pt</span>
                     </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Ainda na aba <b>Config</b> de cada roteador, clique em <b>RIP</b> (abaixo de <em>ROUTING</em> no menu esquerdo).</li>
-                            <li>Digite o endereço de cada rede diretamente conectada àquele roteador no campo <b>Network</b> e clique em <b>Add</b> (por exemplo, no <code>Roteador-0</code>, adicione <code>11.0.0.0</code>, <code>22.0.0.0</code> e <code>44.0.0.0</code>).</li>
-                        </ol>
-                        <div class="dica-box"><b>Por que usar o RIP?</b> Com o protocolo RIP ativo nos 5 roteadores, eles trocam tabelas de rotas automaticamente e descobrem caminhos alternativos pelo anel de fibra óptica!</div>
+                    <div class="etapa-grade">
+                        <div class="etapa-corpo">
+                            <ol>
+                                <li>O <code>Roteador-Casa-1</code> já entrega o DNS <code>99.1.1.1</code> via DHCP, mas o <code>Roteador-Casa-2</code> está com o campo DNS zerado.</li>
+                                <li>Clique no <b>Roteador-Casa-2</b> (lado direito inferior) → abra a aba <b>GUI</b>.</li>
+                                <li>Role até a seção <b>Network Setup → DHCP Server Setting</b> e preencha <b>Static DNS 1:</b> <code>99.1.1.1</code>.</li>
+                                <li>Role até o fim da tela azul e clique no botão <b>Save Settings</b>.</li>
+                            </ol>
+                        </div>
+                        <div class="etapa-tela" aria-hidden="true">
+                            <div class="etapa-tela-barra"><span>Roteador-Casa-2 · Aba GUI</span><b>Static DNS 1: 99.1.1.1</b></div>
+                            <svg viewBox="0 0 420 155">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
+                                    <rect x="20" y="16" width="380" height="122" rx="8" fill="#111a30" stroke="#3b74c9" stroke-width="1.5"/>
+                                    <text x="34" y="38" font-weight="700" fill="#7fd6ff">Network Setup · DHCP Server Setting</text>
+                                    <text x="34" y="64" fill="#a3b3cf">Start IP Address:  192.168.0.100</text>
+                                    <text x="34" y="92" fill="#fff" font-weight="700">Static DNS 1:</text>
+                                    <rect x="165" y="76" width="180" height="24" rx="4" fill="#0a1122" stroke="#7fd39c" stroke-width="1.6"/>
+                                    <text x="178" y="92" fill="#7fd39c" font-weight="700">99 . 1 . 1 . 1</text>
+                                    <rect x="275" y="108" width="110" height="22" rx="4" fill="#8ec5ff"/>
+                                    <text x="285" y="123" fill="#08101f" font-weight="700" font-size="9.5">Save Settings</text>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </li>
 
+                <!-- ETAPA 4 -->
                 <li class="etapa-card">
                     <div class="etapa-cabeca">
                         <label class="etapa-check">
                             <input type="checkbox" data-etapa="4">
-                            <span>Configurar o Servidor-DNS (Rede 99.0.0.0/8)</span>
+                            <span>Ativar DHCP nos computadores PC-Casa-1 e PC-Casa-2 e abrir abner.com.br</span>
                         </label>
-                        <span class="etapa-num">Etapa 04</span>
+                        <span class="etapa-num">Etapa 04 · 2 pts</span>
                     </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Clique no <b>Servidor-DNS</b> → aba <b>Desktop</b> → <b>IP Configuration</b>: defina o IP estático <code>99.1.1.1</code>, máscara <code>255.0.0.0</code> e Default Gateway <code>99.2.2.2</code> (que é o IP do <code>Roteador-3</code>).</li>
-                            <li>Vá na aba <b>Services</b> → clique em <b>DNS</b> no menu esquerdo → mude o serviço para <b>On</b>.</li>
-                            <li>Cadastre o domínio principal e seus apelidos:
-                                <ul>
-                                    <li><b>Name:</b> <code>abner.com.br</code> | <b>Type:</b> <code>A Record</code> | <b>Address:</b> <code>88.2.2.2</code> → clique em <b>Add</b>.</li>
-                                    <li><b>Name:</b> <code>www.abner.com.br</code> | <b>Type:</b> <code>CNAME</code> | <b>Host Name:</b> <code>abner.com.br</code> → clique em <b>Add</b>.</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </div>
-                </li>
+                    <div class="etapa-grade">
+                        <div class="etapa-corpo">
+                            <ol>
+                                <li>Clique em <b>PC-Casa-1</b> → aba <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b>.</li>
+                                <li>Clique em <b>PC-Casa-2</b> → aba <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b>.</li>
+                                <li>Ambos os PCs receberão IP <code>192.168.0.100</code>, Gateway <code>192.168.0.1</code> e DNS <code>99.1.1.1</code>, atingindo <b>100% (10/10 pontos)</b>!</li>
+                                <li>Abra o <b>Web Browser</b> em qualquer um dos PCs, digite <code>abner.com.br</code> ou <code>www.abner.com.br</code> e clique em <b>Go</b>.</li>
+                            </ol>
+                        </div>
+                        <div class="etapa-tela" aria-hidden="true">
+                            <div class="etapa-tela-barra"><span>PC-Casa-1 / PC-Casa-2 · Web Browser</span><b>HTTP 200 OK</b></div>
+                            <svg viewBox="0 0 420 155">
+                                <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#e8eef8">
+                                    <rect x="20" y="16" width="380" height="122" rx="8" fill="#16213d" stroke="#7fd39c" stroke-width="1.5"/>
+                                    <text x="32" y="40" fill="#a3b3cf">URL:</text>
+                                    <rect x="68" y="25" width="265" height="22" rx="4" fill="#0a1122" stroke="#7fd6ff"/>
+                                    <text x="78" y="40" fill="#7fd6ff">http://www.abner.com.br</text>
+                                    <rect x="342" y="25" width="44" height="22" rx="4" fill="#7fd39c"/>
+                                    <text x="356" y="40" fill="#08101f" font-weight="700">Go</text>
 
-                <li class="etapa-card">
-                    <div class="etapa-cabeca">
-                        <label class="etapa-check">
-                            <input type="checkbox" data-etapa="5">
-                            <span>Configurar o Servidor-Web HTTP (Rede 88.0.0.0/8)</span>
-                        </label>
-                        <span class="etapa-num">Etapa 05</span>
-                    </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Clique no <b>Servidor-Web</b> → aba <b>Desktop</b> → <b>IP Configuration</b>: defina o IP estático <code>88.2.2.2</code>, máscara <code>255.0.0.0</code> e Default Gateway <code>88.1.1.1</code> (que é o IP do <code>Roteador-4</code>).</li>
-                            <li>Vá na aba <b>Services</b> → <b>HTTP</b> → clique em <b>(edit)</b> ao lado do arquivo <code>index.html</code>.</li>
-                            <li>Personalize o HTML da página (ex.: <code>&lt;center&gt;&lt;h1&gt;Ábner Lucas Alves Pereira&lt;/h1&gt;&lt;/center&gt;</code>) e clique em <b>Save</b>.</li>
-                        </ol>
-                    </div>
-                </li>
-
-                <li class="etapa-card">
-                    <div class="etapa-cabeca">
-                        <label class="etapa-check">
-                            <input type="checkbox" data-etapa="6">
-                            <span>Configurar os Roteadores Residenciais (WAN + DHCP) e acessar o site pelos PCs</span>
-                        </label>
-                        <span class="etapa-num">Etapa 06</span>
-                    </div>
-                    <div class="etapa-corpo">
-                        <ol>
-                            <li>Clique no <b>Roteador-Casa-1</b> → aba <b>GUI</b>:
-                                <ul>
-                                    <li>Em <b>Internet Setup</b>, mude <em>Internet Connection Type</em> para <b>Static IP</b>.</li>
-                                    <li>Preencha <b>Internet IP Address:</b> <code>11.1.1.1</code>, <b>Subnet Mask:</b> <code>255.0.0.0</code> e <b>Default Gateway:</b> <code>11.2.2.2</code>.</li>
-                                    <li>Mais abaixo, em <b>Static DNS 1</b>, digite <code>99.1.1.1</code> e clique em <b>Save Settings</b> no fim da página.</li>
-                                </ul>
-                            </li>
-                            <li>Repita no <b>Roteador-Casa-2</b> → aba <b>GUI</b>:
-                                <ul>
-                                    <li>Mude para <b>Static IP</b> com <b>Internet IP Address:</b> <code>77.2.2.2</code>, <b>Subnet Mask:</b> <code>255.0.0.0</code>, <b>Default Gateway:</b> <code>77.1.1.1</code> e <b>Static DNS 1:</b> <code>99.1.1.1</code> → clique em <b>Save Settings</b>.</li>
-                                </ul>
-                            </li>
-                            <li>Nos computadores <b>PC-Casa-1</b> e <b>PC-Casa-2</b>, vá em <b>Desktop → IP Configuration</b> e marque <b>DHCP</b> (eles receberão IP <code>192.168.0.100</code>, Gateway <code>192.168.0.1</code> e DNS <code>99.1.1.1</code>).</li>
-                            <li>Abra o <b>Web Browser</b> em qualquer um dos PCs, digite <code>http://abner.com.br</code> ou <code>http://www.abner.com.br</code> e clique em <b>Go</b> para ver a página carregar atravessando toda a WAN!</li>
-                        </ol>
+                                    <rect x="32" y="58" width="354" height="68" rx="6" fill="#0a1122" stroke="#26365c"/>
+                                    <text x="82" y="92" font-size="13" font-weight="700" fill="#fff">Ábner Lucas Alves Pereira</text>
+                                    <text x="95" y="114" font-size="9" fill="#7fd39c">Resolvido via DNS 99.1.1.1 → Web 88.2.2.2</text>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </li>
             </ol>
@@ -394,14 +417,14 @@
 
         <!-- NAVEGAÇÃO ENTRE OS 5 LABORATÓRIOS -->
         <section class="secao">
-            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer</h3>
+            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer (.PKA)</h3>
             <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
                 <a class="lab-nav-item" href="./rede-fisica-local.html" data-par="azul">
-                    <small>Prática 01 · .PKT</small>
+                    <small>Prática 01 · .PKA</small>
                     <b>Criação de Rede Física Local</b>
                 </a>
                 <a class="lab-nav-item" href="./rede-wan-dns-web.html" aria-current="page" data-par="verde">
-                    <small>Prática 02 · .PKT</small>
+                    <small>Prática 02 · .PKA</small>
                     <b>Rede WAN Completa (DNS + Web)</b>
                 </a>
                 <a class="lab-nav-item" href="./roteador-sem-fio.html" data-par="laranja">
@@ -443,7 +466,7 @@
         <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · PRÁTICA 02 · REDE WAN DNS + WEB</p>
     </footer>
 
-    <script src="../logica.js?v=2026.11.23h"></script>
-    <script src="../script.js?v=2026.11.23h"></script>
+    <script src="../logica.js?v=2026.11.23i"></script>
+    <script src="../script.js?v=2026.11.23i"></script>
 </body>
 </html>
