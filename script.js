@@ -55,56 +55,94 @@
         });
     })();
 
-    /* ---------- menu móvel ---------- */
-    (function () {
-        var botao = $('#botao-menu'), menu = $('#menu');
-        if (!botao || !menu) return;
-        function abrir(on) {
-            menu.classList.toggle('aberto', on);
-            botao.setAttribute('aria-expanded', String(on));
-            botao.setAttribute('aria-label', on ? 'Fechar menu' : 'Abrir menu');
-        }
-        botao.addEventListener('click', function () { abrir(!menu.classList.contains('aberto')); });
-        $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { abrir(false); }); });
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && menu.classList.contains('aberto')) { abrir(false); botao.focus(); }
-        });
-    })();
-
-    /* ---------- rolagem: progresso, seção atual, cenas, trilha ---------- */
-    var barra = $('#progresso-barra');
+    /* ---------- rota (traceroute): salto atual, pacote que viaja, rótulo do topo ---------- */
     var cenas = $$('[data-cena]');
-    var trilha = $('#trilha-lista');
-    var linksMenu = $$('#menu a').filter(function (a) { return a.getAttribute('href').charAt(0) === '#'; });
+    var conexoes = $$('[data-conexao]');
+    var rota = $('#rota');
+    var saltos = rota ? $$('a[data-salto]', rota) : [];
+    var secoes = saltos.map(function (a) { return $(a.getAttribute('href')); });
+    var listaRota = rota ? $('ol', rota) : null;
+    var topoSalto = $('#topo-salto'), topoNome = $('#topo-nome');
+    var largo = window.matchMedia('(min-width: 1180px)');
 
     function atualizarCenas() {
         var vh = window.innerHeight;
         cenas.forEach(function (s) {
-            if (calmo()) { s.style.removeProperty('--cena'); return; }
-            var topo = s.getBoundingClientRect().top;
-            // começa quando o topo entra pela base da tela e termina a ~65% da altura
-            var p = (vh - topo) / (vh * 0.35);
-            s.style.setProperty('--cena', Math.max(0, Math.min(1, p)).toFixed(3));
+            var palco = s.classList.contains('secao-palco');
+            var alvo = palco ? s : s.firstElementChild;
+            var p = (vh - s.getBoundingClientRect().top) / (vh * 0.35);
+            p = Math.max(0, Math.min(1, p));
+            if (calmo() || p >= 1) { alvo.style.clipPath = alvo.style.transform = alvo.style.opacity = ''; return; }
+            var q = 1 - p;
+            alvo.style.clipPath = palco
+                ? 'inset(' + (4 * q) + '% ' + (5 * q) + '% 0% ' + (5 * q) + '% round ' + (28 + 20 * q) + 'px)'
+                : 'inset(' + (3 * q) + '% ' + (2 * q) + '% 0% ' + (2 * q) + '% round ' + (40 * q) + 'px)';
+            alvo.style.transform = 'translateY(' + (48 * q) + 'px)';
+            alvo.style.opacity = String(0.7 + 0.3 * Math.min(1, p / 0.4));
+        });
+        // plugue desce até encaixar quando a conexão passa de ~75% da tela
+        conexoes.forEach(function (c) {
+            var t = c.getBoundingClientRect().top;
+            var p = calmo() ? 1 : Math.max(0, Math.min(1, (vh * 0.95 - t) / (vh * 0.25)));
+            c.style.setProperty('--p', p.toFixed(3));
+            c.classList.toggle('encaixado', p >= 0.98);
         });
     }
 
-    function aoRolar() {
-        var doc = html.scrollHeight - window.innerHeight;
-        if (barra) barra.style.setProperty('--leitura', doc > 0 ? (window.scrollY / doc).toFixed(4) : 0);
-        atualizarCenas();
-
-        if (trilha) {
-            var r = trilha.getBoundingClientRect();
-            var p = calmo() ? 1 : (window.innerHeight * 0.7 - r.top) / r.height;
-            trilha.style.setProperty('--trilha', Math.max(0, Math.min(1, p)).toFixed(3));
+    function atualizarRota() {
+        if (!rota || !secoes.length) return;
+        var marco = window.innerHeight * 0.35;
+        var atual = 0, frac = 0;
+        for (var i = 0; i < secoes.length; i++) {
+            if (secoes[i] && secoes[i].getBoundingClientRect().top <= marco) atual = i;
         }
+        var s = secoes[atual], prox = secoes[atual + 1];
+        if (s && prox) {
+            var a = s.getBoundingClientRect().top, b = prox.getBoundingClientRect().top;
+            frac = Math.max(0, Math.min(1, (marco - a) / Math.max(1, b - a)));
+        }
+        if (html.scrollHeight - window.innerHeight - window.scrollY < 4) { atual = secoes.length - 1; frac = 0; }
 
-        var atual = null;
-        linksMenu.forEach(function (a) {
-            var alvo = $(a.getAttribute('href'));
-            if (alvo && alvo.getBoundingClientRect().top < window.innerHeight * 0.35) atual = a;
+        saltos.forEach(function (lk, i) {
+            lk.setAttribute('aria-current', String(i === atual));
+            lk.classList.toggle('passou', i < atual);
         });
-        linksMenu.forEach(function (a) { a.setAttribute('aria-current', String(a === atual)); });
+
+        // posição do pacote entre o nó atual e o próximo
+        var nos = saltos.map(function (lk) { return $('.rota-no', lk); });
+        var base = listaRota.getBoundingClientRect();
+        var r1 = nos[atual].getBoundingClientRect();
+        var r2 = nos[Math.min(atual + 1, nos.length - 1)].getBoundingClientRect();
+        if (largo.matches) {
+            var y1 = r1.top + r1.height / 2 - base.top, y2 = r2.top + r2.height / 2 - base.top;
+            var y = y1 + (y2 - y1) * frac;
+            rota.style.setProperty('--rota-y', Math.max(0, y - 8).toFixed(1) + 'px');
+            rota.style.setProperty('--pac-y', (y - 5).toFixed(1) + 'px');
+        } else {
+            var x0 = nos[0].getBoundingClientRect().left;
+            var x1 = r1.left - x0, x2 = r2.left - x0;
+            var rx = x1 + (x2 - x1) * frac;
+            rota.style.setProperty('--rota-x', rx.toFixed(1) + 'px');
+            var rr = rota.getBoundingClientRect(), n0 = nos[0].getBoundingClientRect();
+            rota.style.setProperty('--pac-x', (n0.left + n0.width / 2 - rr.left - 5 + rx).toFixed(1) + 'px');
+        }
+        var cores = ['#f0a067', '#7fd6ff', '#7fd39c', '#7fb2f0', '#d6a682'];
+        var pac = $('#rota-pacote');
+        if (pac) { pac.style.background = cores[atual]; pac.style.boxShadow = '0 0 12px ' + cores[atual]; }
+
+        if (topoSalto) topoSalto.textContent = 'salto ' + (atual + 1) + ' de ' + saltos.length;
+        if (topoNome) topoNome.textContent = $('.rota-nome', saltos[atual]).textContent.toLowerCase();
+    }
+
+    var topoEl = $('#topo'), ultimoY = window.scrollY;
+    var saltosTrace = $$('.traceroute li');
+    function aoRolar() {
+        atualizarCenas(); atualizarRota();
+        var y = window.scrollY;
+        var painelAberto = $('#painel-conforto') && !$('#painel-conforto').hidden;
+        if (topoEl) topoEl.classList.toggle('escondido', !calmo() && !painelAberto && y > ultimoY && y > 400);
+        ultimoY = y;
+        saltosTrace.forEach(function (li) { li.classList.toggle('ativa', li.getBoundingClientRect().top < window.innerHeight * 0.75); });
     }
     var pedido = false;
     window.addEventListener('scroll', function () {
@@ -115,9 +153,116 @@
     window.addEventListener('resize', aoRolar);
     aoRolar();
 
+    /* ---------- malha de fundo: nós, enlaces e pacotes (canvas) ---------- */
+    (function () {
+        var tela = $('#malha');
+        if (!tela || !tela.getContext) return;
+        var ctx = tela.getContext('2d');
+        var nos = [], enlaces = [], pacotes = [];
+        var largura = 0, altura = 0, dpr = 1;
+        var ponteiro = { x: -999, y: -999 };
+        var CORES = ['240,160,103', '127,211,156', '127,178,240', '214,166,130', '127,214,255'];
+        var rodando = false, ultimo = 0;
+
+        function cor(nome) { return getComputedStyle(html).getPropertyValue(nome).trim() || '127,214,255'; }
+
+        // gerador com semente: a malha é sempre a mesma para o mesmo tamanho de tela
+        function aleatorio(semente) {
+            var s = semente >>> 0;
+            return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+        }
+
+        function montar() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            largura = window.innerWidth; altura = window.innerHeight;
+            tela.width = largura * dpr; tela.height = altura * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            var rnd = aleatorio(largura * 7 + altura);
+            var passo = largura < 700 ? 120 : 150;
+            nos = [];
+            for (var y = passo / 2; y < altura + passo; y += passo) {
+                for (var x = passo / 2; x < largura + passo; x += passo) {
+                    nos.push({ x: x + (rnd() - 0.5) * passo * 0.8, y: y + (rnd() - 0.5) * passo * 0.8, r: 1.2 + rnd() * 1.8, hub: rnd() < 0.12 });
+                }
+            }
+            enlaces = [];
+            nos.forEach(function (a, i) {
+                var perto = nos.map(function (b, j) { return { j: j, d: Math.hypot(a.x - b.x, a.y - b.y) }; })
+                    .filter(function (o) { return o.j !== i; }).sort(function (p, q) { return p.d - q.d; }).slice(0, 2);
+                perto.forEach(function (o) {
+                    if (o.d < passo * 1.6 && !enlaces.some(function (e) { return (e.a === o.j && e.b === i); })) enlaces.push({ a: i, b: o.j });
+                });
+            });
+            pacotes = [];
+            var qtd = largura < 700 ? 5 : 9;
+            for (var k = 0; k < qtd; k++) pacotes.push(novoPacote(rnd));
+        }
+
+        function novoPacote(rnd) {
+            rnd = rnd || Math.random;
+            return { e: Math.floor(rnd() * enlaces.length), t: rnd(), v: 0.04 + rnd() * 0.05, c: CORES[Math.floor(rnd() * CORES.length)], ida: rnd() < 0.5 };
+        }
+
+        function desenhar(dt) {
+            ctx.clearRect(0, 0, largura, altura);
+            var cn = cor('--malha-no'), cl = cor('--malha-linha');
+            ctx.lineWidth = 1;
+            enlaces.forEach(function (e) {
+                var a = nos[e.a], b = nos[e.b];
+                var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+                var perto = Math.max(0, 1 - Math.hypot(mx - ponteiro.x, my - ponteiro.y) / 220);
+                ctx.strokeStyle = 'rgba(' + cl + ',' + (0.22 + perto * 0.5).toFixed(3) + ')';
+                ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+            });
+            nos.forEach(function (n) {
+                var perto = Math.max(0, 1 - Math.hypot(n.x - ponteiro.x, n.y - ponteiro.y) / 180);
+                ctx.fillStyle = 'rgba(' + cn + ',' + (0.45 + perto * 0.55).toFixed(3) + ')';
+                if (n.hub) {
+                    ctx.fillRect(n.x - 4, n.y - 3, 8, 6);
+                } else {
+                    ctx.beginPath(); ctx.arc(n.x, n.y, n.r + perto * 1.5, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+            if (calmo() || !enlaces.length) return;
+            pacotes.forEach(function (p, i) {
+                p.t += p.v * dt;
+                if (p.t >= 1) { pacotes[i] = novoPacote(); return; }
+                var e = enlaces[p.e]; if (!e) return;
+                var a = nos[p.ida ? e.a : e.b], b = nos[p.ida ? e.b : e.a];
+                var x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
+                var g = ctx.createRadialGradient(x, y, 0, x, y, 10);
+                g.addColorStop(0, 'rgba(' + p.c + ',.9)'); g.addColorStop(1, 'rgba(' + p.c + ',0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(' + p.c + ',1)'; ctx.fillRect(x - 2, y - 2, 4, 4);
+            });
+        }
+
+        function quadro(t) {
+            if (!rodando) return;
+            var dt = ultimo ? Math.min(0.05, (t - ultimo) / 1000) : 0.016;
+            ultimo = t;
+            desenhar(dt);
+            requestAnimationFrame(quadro);
+        }
+        function iniciar() {
+            if (calmo() || document.hidden) { rodando = false; desenhar(0); return; }
+            if (rodando) return;
+            rodando = true; ultimo = 0; requestAnimationFrame(quadro);
+        }
+
+        montar(); iniciar();
+        var espera;
+        window.addEventListener('resize', function () { clearTimeout(espera); espera = setTimeout(function () { montar(); desenhar(0); }, 200); });
+        window.addEventListener('pointermove', function (e) { ponteiro.x = e.clientX; ponteiro.y = e.clientY; if (!rodando) desenhar(0); }, { passive: true });
+        document.addEventListener('visibilitychange', function () { if (document.hidden) rodando = false; else iniciar(); });
+        // reage às trocas do painel de conforto (modo calmo e tema)
+        new MutationObserver(function () { rodando = false; iniciar(); })
+            .observe(html, { attributes: true, attributeFilter: ['data-calmo', 'data-tema'] });
+    })();
+
     /* ---------- revelação em cascata ---------- */
     (function () {
-        var grupos = ['.agora-grade > *', '.avisos > li', '.trilha > li', '.tabela tbody tr'];
+        var grupos = ['.vitrine > .projeto', '.biblioteca > li', '.avisos > li', '.traceroute > li', '.ementa', '.mural > article'];
         var itens = [];
         grupos.forEach(function (g) {
             $$(g).forEach(function (el, i) { el.classList.add('revelar'); el.style.setProperty('--i', i); itens.push(el); });
@@ -130,6 +275,62 @@
         }, { rootMargin: '0px 0px -8% 0px' });
         itens.forEach(function (el) { obs.observe(el); });
     })();
+
+    /* ---------- cortina: marca a visita da sessão ---------- */
+    try { sessionStorage.setItem('rc:visitado', '1'); } catch (e) { /* sem armazenamento */ }
+
+    /* ---------- títulos palavra a palavra (máscara) ---------- */
+    (function () {
+        var titulos = $$('[data-palavras]');
+        titulos.forEach(function (t) {
+            var texto = t.textContent.replace(/\s+/g, ' ').trim();
+            t.setAttribute('aria-label', texto);
+            t.textContent = '';
+            texto.split(' ').forEach(function (p, i) {
+                var m = document.createElement('span'); m.className = 'palavra'; m.setAttribute('aria-hidden', 'true');
+                var d = document.createElement('span'); d.textContent = p; d.style.setProperty('--i', i);
+                m.appendChild(d); t.appendChild(m); t.appendChild(document.createTextNode(' '));
+            });
+        });
+        if (!('IntersectionObserver' in window)) { titulos.forEach(function (t) { t.classList.add('visivel'); }); return; }
+        var obs = new IntersectionObserver(function (es) {
+            es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        titulos.forEach(function (t) { obs.observe(t); });
+    })();
+
+    /* ---------- cursor deslizante dos filtros ---------- */
+    function posicionarCursor(grupo) {
+        var cursor = $('.seletor-cursor', grupo), b = $('.filtro[aria-pressed="true"]', grupo);
+        if (!cursor || !b) return;
+        cursor.style.width = b.offsetWidth + 'px';
+        cursor.style.height = b.offsetHeight + 'px';
+        cursor.style.transform = 'translate(' + b.offsetLeft + 'px, ' + b.offsetTop + 'px)';
+    }
+    $$('.seletor').forEach(function (g) {
+        posicionarCursor(g);
+        window.addEventListener('resize', function () { posicionarCursor(g); });
+        if (document.fonts) document.fonts.ready.then(function () { posicionarCursor(g); });
+    });
+
+    /* ---------- filtros (vitrine e biblioteca) ---------- */
+    $$('.filtros').forEach(function (grupo) {
+        var alvo = $(grupo.dataset.filtroAlvo);
+        if (!alvo) return;
+        var botoes = $$('.filtro', grupo);
+        botoes.forEach(function (b) {
+            b.addEventListener('click', function () {
+                var f = b.dataset.filtro;
+                botoes.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+                posicionarCursor(grupo);
+                $$('[data-tipo]', alvo).forEach(function (item) {
+                    var tipos = item.dataset.tipo.split(' ');
+                    item.hidden = !(f === 'todos' || tipos.indexOf(f) >= 0);
+                    if (!item.hidden) item.classList.add('visivel');
+                });
+            });
+        });
+    });
 
     /* ---------- abas genéricas (teclado: setas, Home, End) ---------- */
     function ligarAbas(lista, aoTrocar) {

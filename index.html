@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redes de Computadores · IFPA Campus Breves</title>
-    <meta name="description" content="Portal da disciplina de Redes de Computadores · Prof. Ábner Lucas · IFPA Campus Breves. Aulas por unidade, avisos, materiais e laboratórios de modelo OSI e cabo UTP.">
-    <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#141922" media="(prefers-color-scheme: dark)">
+    <meta name="description" content="Portal da disciplina de Redes de Computadores · Prof. Ábner Lucas · IFPA Campus Breves. Projetos e práticas da turma, laboratórios interativos de modelo OSI e cabo UTP, e biblioteca de materiais.">
+    <meta name="theme-color" content="#0a1020">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
 
     <!-- Preferências aplicadas antes da primeira pintura (sem piscar):
@@ -16,28 +15,44 @@
             var h = document.documentElement;
             function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
             var tema = ler('rc:tema');
-            var escuro = tema ? tema === 'escuro' : matchMedia('(prefers-color-scheme: dark)').matches;
+            var escuro = tema ? tema === 'escuro' : true;
             var calmo = ler('rc:calmo');
             h.dataset.tema = escuro ? 'escuro' : 'claro';
             h.dataset.calmo = calmo ? calmo : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'sim' : 'nao');
             h.dataset.texto = ler('rc:texto') || 'normal';
             h.classList.add('js');
+            try { if (sessionStorage.getItem('rc:visitado')) h.dataset.visitado = ''; } catch (e) { h.dataset.visitado = ''; }
+            if (h.dataset.calmo === 'sim') h.dataset.visitado = '';
         })();
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2026.11.22b">
+    <link rel="stylesheet" href="style.css?v=2026.11.23e">
 </head>
 <body>
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
-    <!-- Barra de leitura: um cabo que vai sendo "passado" -->
-    <div class="progresso" aria-hidden="true"><span id="progresso-barra"></span></div>
+    <!-- Cortina de abertura (só na 1ª visita da sessão, nunca no modo calmo):
+         o "aperto de mão" do TCP antes de a página abrir -->
+    <div class="cortina" aria-hidden="true">
+        <div class="cortina-nos">
+            <span class="c-no">PC</span>
+            <span class="c-msg"><i class="c-seta c-ida"></i><b>SYN</b></span>
+            <span class="c-msg"><i class="c-seta c-volta"></i><b>SYN-ACK</b></span>
+            <span class="c-msg"><i class="c-seta c-ida"></i><b>ACK</b></span>
+            <span class="c-no">IFPA</span>
+        </div>
+        <p class="cortina-txt">estabelecendo conexão…</p>
+    </div>
+
+    <!-- Fundo vivo: a malha da rede, com pacotes passando devagar (parada no modo calmo) -->
+    <canvas class="malha" id="malha" aria-hidden="true"></canvas>
+    <div class="vinheta" aria-hidden="true"></div>
 
     <!-- ============ CABEÇALHO (sempre visível: orientação previsível) ============ -->
-    <header class="topo">
+    <header class="topo" id="topo">
         <div class="topo-inner">
             <a href="#inicio" class="marca" aria-label="Redes de Computadores, voltar ao início">
                 <svg class="marca-porta" viewBox="0 0 32 28" aria-hidden="true">
@@ -47,21 +62,12 @@
                 <span class="marca-texto">Redes <em>de Computadores</em></span>
             </a>
 
-            <nav class="menu" id="menu" aria-label="Seções do portal">
-                <a href="#comece">Comece aqui</a>
-                <a href="#aulas">Aulas</a>
-                <a href="#laboratorio">Laboratório</a>
-                <a href="#materiais">Materiais</a>
-                <a href="#trilha">Trilha</a>
-            </nav>
 
+            <p class="topo-local" aria-hidden="true"><span class="topo-led"></span><span id="topo-salto">salto 1 de 5</span> · <b id="topo-nome">início</b></p>
             <div class="topo-acoes">
                 <button class="botao-conforto" id="botao-conforto" type="button" aria-expanded="false" aria-controls="painel-conforto">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2.2" /><circle cx="10" cy="17" r="2.2" /></svg>
                     <span>Conforto</span>
-                </button>
-                <button class="botao-menu" id="botao-menu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu">
-                    <span></span><span></span>
                 </button>
             </div>
         </div>
@@ -84,28 +90,41 @@
         </div>
     </header>
 
+    <!-- ============ ROTA: navegação principal ============
+         Cada seção é um "salto" da rota. O pacote desce pela linha conforme a leitura. -->
+    <nav class="rota" id="rota" aria-label="Seções do portal">
+        <ol>
+            <li><a href="#inicio" data-salto="1"><span class="rota-no" aria-hidden="true"></span><span class="rota-num" aria-hidden="true">01</span><span class="rota-nome">Início</span></a></li>
+            <li><a href="#projetos" data-salto="2"><span class="rota-no" aria-hidden="true"></span><span class="rota-num" aria-hidden="true">02</span><span class="rota-nome">Projetos</span></a></li>
+            <li><a href="#laboratorio" data-salto="3"><span class="rota-no" aria-hidden="true"></span><span class="rota-num" aria-hidden="true">03</span><span class="rota-nome">Lab</span></a></li>
+            <li><a href="#materiais" data-salto="4"><span class="rota-no" aria-hidden="true"></span><span class="rota-num" aria-hidden="true">04</span><span class="rota-nome">Materiais</span></a></li>
+            <li><a href="#sobre" data-salto="5"><span class="rota-no" aria-hidden="true"></span><span class="rota-num" aria-hidden="true">05</span><span class="rota-nome">Sobre</span></a></li>
+        </ol>
+        <span class="rota-pacote" id="rota-pacote" aria-hidden="true"></span>
+    </nav>
+
     <main id="conteudo">
 
         <!-- ============ ABERTURA ============ -->
         <section id="inicio" class="abertura">
             <div class="abertura-grade">
                 <div class="abertura-texto">
-                    <p class="kicker">
+                    <p class="kicker entra" style="--atraso:.05s">
                         <span>IFPA Campus Breves</span>
                         <span>Técnico em Informática</span>
                         <span>Prof. Ábner Lucas</span>
                     </p>
-                    <h1 class="titulo-grande">Redes de <span>Computadores</span></h1>
-                    <p class="lead">Do cabo ao aplicativo: como uma mensagem sai do seu celular, atravessa a rede e chega do outro lado.</p>
-                    <div class="botoes">
-                        <a class="botao botao-cheio" href="#comece">Comece aqui</a>
-                        <a class="botao botao-linha" href="#aulas">Ir para as aulas</a>
+                    <h1 class="titulo-grande entra" style="--atraso:.15s"><span class="t-linha">Redes de</span> <span class="t-linha t-cor"><span class="t-sublinha">Computadores</span></span></h1>
+                    <p class="lead entra" style="--atraso:.3s">Do cabo ao aplicativo: como uma mensagem sai do seu celular, atravessa a rede e chega do outro lado.</p>
+                    <div class="botoes entra" style="--atraso:.42s">
+                        <a class="botao botao-cheio" href="#projetos">Ver projetos e práticas</a>
+                        <a class="botao botao-linha" href="#materiais">Materiais</a>
                     </div>
-                    <p class="nota-rodape-hero">TIINF1647 · 67 h · Técnico em Informática</p>
+                    <p class="terminal-linha entra" style="--atraso:.55s" aria-hidden="true"><span class="prompt">$</span> ping ifpa-breves.edu <span class="resposta">64 bytes · ttl=64 · conectado</span></p>
                 </div>
 
                 <!-- Laboratório principal: encapsulamento passo a passo (o aluno controla o ritmo) -->
-                <div class="lab-envio" id="lab-envio" aria-labelledby="envio-titulo">
+                <div class="lab-envio entra" style="--atraso:.25s" id="lab-envio" aria-labelledby="envio-titulo">
                     <div class="lab-cabeca">
                         <h2 id="envio-titulo" class="lab-titulo">Envie uma mensagem pela rede</h2>
                         <p class="lab-sub">Cada camada do modelo OSI acrescenta uma etiqueta. Avance no seu ritmo.</p>
@@ -135,302 +154,179 @@
             </div>
         </section>
 
-        <!-- Divisor: as 8 vias de um cabo T568B, na ordem dos pinos -->
-        <div class="cabo-divisor" aria-hidden="true">
-            <span class="via v-bl"></span><span class="via v-l"></span><span class="via v-bv"></span><span class="via v-a"></span>
-            <span class="via v-ba"></span><span class="via v-v"></span><span class="via v-bm"></span><span class="via v-m"></span>
+        <!-- Fita: a pilha de protocolos passando (pausa ao passar o mouse; parada no modo calmo) -->
+        <div class="fita" aria-hidden="true"><div class="fita-trilho"><span>HTTP</span><i></i><span>DNS</span><i></i><span>TLS</span><i></i><span>TCP</span><i></i><span>UDP</span><i></i><span>IP</span><i></i><span>ICMP</span><i></i><span>Ethernet</span><i></i><span>Wi-Fi</span><i></i><span>UTP</span><i></i><span>fibra óptica</span><i></i><span>switch</span><i></i><span>roteador</span><i></i><span>T568B</span><i></i><span>HTTP</span><i></i><span>DNS</span><i></i><span>TLS</span><i></i><span>TCP</span><i></i><span>UDP</span><i></i><span>IP</span><i></i><span>ICMP</span><i></i><span>Ethernet</span><i></i><span>Wi-Fi</span><i></i><span>UTP</span><i></i><span>fibra óptica</span><i></i><span>switch</span><i></i><span>roteador</span><i></i><span>T568B</span><i></i></div></div>
+
+        <!-- Transição: o plugue desce e encaixa na porta da próxima seção -->
+        <div class="conexao" data-conexao aria-hidden="true">
+            <svg viewBox="0 0 120 150">
+                <path class="cx-cabo" d="M60 0v62" />
+                <g class="cx-plugue">
+                    <rect x="38" y="60" width="44" height="34" rx="4" />
+                    <path d="M44 66h32M47 66v10M52 66v10M57 66v10M62 66v10M67 66v10M72 66v10" class="cx-pinos" />
+                    <rect x="52" y="94" width="16" height="8" rx="2" />
+                </g>
+                <g class="cx-porta">
+                    <path d="M30 104h60v34H72v8H48v-8H30z" />
+                    <circle class="cx-led" cx="38" cy="112" r="3" />
+                </g>
+            </svg>
+            <span class="cx-rotulo">salto 02</span>
         </div>
 
-        <!-- ============ COMECE AQUI ============ -->
-        <section id="comece" class="secao" data-cena>
+        <!-- ============ PROJETOS E PRÁTICAS (vitrine) ============ -->
+        <section id="projetos" class="secao" data-cena>
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="porta-mini" aria-hidden="true"></span>porta 01 · comece aqui</p>
-                <h2 class="titulo-secao">Como a disciplina funciona</h2>
-                <p class="secao-intro">Três coisas para saber antes de começar. O resto você encontra nas outras seções.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">salto 02</span><span class="etiqueta-ip">10.0.2.1</span><span class="etiqueta-nome">projetos</span></p>
+                <h2 class="titulo-secao" data-palavras>Projetos e práticas da turma</h2>
+                <p class="secao-intro">O que já foi construído e vivido na disciplina: plataformas, aulas práticas, jogos e desafios.</p>
             </div>
 
-            <div class="agora-grade">
-                <article class="painel-agora">
-                    <p class="painel-rotulo">1 · Quatro unidades</p>
-                    <p class="painel-valor">Do conceito à arquitetura TCP/IP</p>
-                    <p class="painel-detalhe">Cada unidade tem aulas, uma atividade prática e uma avaliação no final.</p>
-                    <a class="link-seta" href="#trilha">Ver a trilha</a>
+            <div class="filtros seletor" role="group" aria-label="Filtrar projetos" data-filtro-alvo="#vitrine">
+                <button type="button" class="filtro" data-filtro="todos" aria-pressed="true">Todos</button>
+                <span class="seletor-cursor" aria-hidden="true"></span>
+                <button type="button" class="filtro" data-filtro="plataforma" aria-pressed="false">Plataformas</button>
+                <button type="button" class="filtro" data-filtro="pratica" aria-pressed="false">Aulas práticas</button>
+                <button type="button" class="filtro" data-filtro="jogo" aria-pressed="false">Jogos e desafios</button>
+            </div>
+
+            <!--
+                COMO ADICIONAR UM PROJETO OU PRÁTICA
+                1. Copie um <article class="projeto"> e cole na ordem que quiser.
+                2. data-tipo: "plataforma", "pratica" ou "jogo" (é o que o filtro usa).
+                3. Troque a ilustração (SVG) por uma foto, se tiver: <img src="./img/nome.jpg?v=..." alt="descrição" loading="lazy">.
+                4. Troque o selo, o título, o texto e o link.
+            -->
+            <div class="vitrine" id="vitrine">
+
+                <!-- DESTAQUE -->
+                <article class="projeto projeto-destaque" data-tipo="plataforma">
+                    <div class="janela" aria-hidden="true">
+                        <p class="janela-barra"><span></span><span></span><span></span><b>osi.profabnerlucas.com</b></p>
+                        <img src="./img/missao-osi.jpg?v=2026.11.23e" alt="" loading="lazy">
+                    </div>
+                    <div class="projeto-texto">
+                        <p class="selo-projeto">plataforma · destaque</p>
+                        <h3>Missão OSI · Investigadores da Rede</h3>
+                        <p>A rede do laboratório parou de responder. Os alunos investigam as sete camadas do modelo OSI, levantam hipóteses, fazem testes e registram evidências até encontrar a falha.</p>
+                        <ul class="fatos">
+                            <li><b>8</b> missões</li>
+                            <li><b>7</b> camadas investigadas</li>
+                            <li>Atlas OSI e caderno de evidências</li>
+                        </ul>
+                        <div class="botoes">
+                            <a class="botao botao-cheio" href="https://osi.profabnerlucas.com/" target="_blank" rel="noopener noreferrer">Abrir a plataforma<span class="sr-only"> (abre em nova aba)</span></a>
+                            <a class="botao botao-linha" href="https://github.com/abner-lucas/missao-osi" target="_blank" rel="noopener noreferrer">Código no GitHub<span class="sr-only"> (abre em nova aba)</span></a>
+                        </div>
+                    </div>
                 </article>
 
-                <article class="painel-agora painel-destaque">
-                    <p class="painel-rotulo">2 · Pratique aqui mesmo</p>
-                    <p class="painel-valor">Laboratórios sem nota e sem tempo</p>
-                    <p class="painel-detalhe">Monte um cabo UTP, descubra a camada de cada coisa e envie uma mensagem pelo modelo OSI.</p>
+                <article class="projeto" data-tipo="pratica" data-par="azul">
+                    <div class="projeto-arte" aria-hidden="true">
+                        <svg viewBox="0 0 240 130">
+                            <g class="arte-fios">
+                                <path d="M0 30C70 30 90 46 150 46" stroke="#e8823a" stroke-dasharray="6 5" /><path d="M0 40C70 40 90 52 150 52" stroke="#e8823a" />
+                                <path d="M0 50C70 50 90 58 150 58" stroke="#3fa45b" stroke-dasharray="6 5" /><path d="M0 60C70 60 90 64 150 64" stroke="#3b74c9" />
+                                <path d="M0 70C70 70 90 70 150 70" stroke="#3b74c9" stroke-dasharray="6 5" /><path d="M0 80C70 80 90 76 150 76" stroke="#3fa45b" />
+                                <path d="M0 90C70 90 90 82 150 82" stroke="#a06a3d" stroke-dasharray="6 5" /><path d="M0 100C70 100 90 88 150 88" stroke="#a06a3d" />
+                            </g>
+                            <rect class="arte-plugue" x="146" y="36" width="64" height="62" rx="6" />
+                            <path class="arte-contatos" d="M200 44v46" />
+                            <rect class="arte-plugue" x="210" y="56" width="14" height="22" rx="3" />
+                        </svg>
+                    </div>
+                    <p class="selo-projeto">aula prática</p>
+                    <h3>Montagem de cabo UTP</h3>
+                    <p>Confecção de cabos de rede em sala, com conector RJ45 e os padrões de pinagem T568A e T568B.</p>
+                    <a class="link-seta" href="#laboratorio">Treine no laboratório virtual</a>
+                </article>
+
+                <article class="projeto" data-tipo="pratica" data-par="verde">
+                    <div class="projeto-arte" aria-hidden="true">
+                        <svg viewBox="0 0 240 130">
+                            <g class="arte-linhas"><path d="M60 40L120 70L180 40M120 70L70 105M120 70L175 105" /></g>
+                            <g class="arte-casas">
+                                <path d="M45 44l15-13 15 13v14H45z" /><path d="M165 44l15-13 15 13v14h-30z" />
+                                <path d="M55 109l15-13 15 13v14H55z" /><path d="M160 109l15-13 15 13v14h-30z" />
+                            </g>
+                            <rect class="arte-switch" x="102" y="60" width="36" height="20" rx="4" />
+                        </svg>
+                    </div>
+                    <p class="selo-projeto">atividade em sala</p>
+                    <h3>A Vila Linkshire</h3>
+                    <p>Atividade em sala de aula sobre a infraestrutura de uma rede: equipamentos, topologias e caminhos.</p>
+                </article>
+
+                <article class="projeto" data-tipo="jogo" data-par="laranja">
+                    <div class="projeto-arte" aria-hidden="true">
+                        <svg viewBox="0 0 240 130">
+                            <g class="arte-grade">
+                                <rect x="60" y="20" width="18" height="18" /><rect x="78" y="20" width="18" height="18" /><rect x="96" y="20" width="18" height="18" /><rect x="114" y="20" width="18" height="18" />
+                                <rect x="96" y="38" width="18" height="18" /><rect x="96" y="56" width="18" height="18" /><rect x="78" y="56" width="18" height="18" /><rect x="114" y="56" width="18" height="18" /><rect x="132" y="56" width="18" height="18" /><rect x="150" y="56" width="18" height="18" />
+                                <rect x="150" y="74" width="18" height="18" /><rect x="150" y="92" width="18" height="18" />
+                            </g>
+                            <g class="arte-letras"><text x="64" y="34">L</text><text x="82" y="34">A</text><text x="100" y="34">N</text><text x="118" y="34">S</text><text x="82" y="70">W</text><text x="100" y="70">A</text><text x="118" y="70">N</text></g>
+                        </svg>
+                    </div>
+                    <p class="selo-projeto">jogo e desafio</p>
+                    <h3>Palavras cruzadas e Teste de Einstein</h3>
+                    <p>Jogo de palavras cruzadas com os termos de fundamentos de redes e o desafio de lógica Teste de Einstein.</p>
+                </article>
+
+                <article class="projeto" data-tipo="plataforma" data-par="marrom">
+                    <div class="projeto-arte" aria-hidden="true">
+                        <svg viewBox="0 0 240 130">
+                            <g class="arte-camadas">
+                                <rect x="70" y="14" width="100" height="12" rx="3" /><rect x="70" y="29" width="100" height="12" rx="3" /><rect x="70" y="44" width="100" height="12" rx="3" />
+                                <rect x="70" y="59" width="100" height="12" rx="3" /><rect x="70" y="74" width="100" height="12" rx="3" /><rect x="70" y="89" width="100" height="12" rx="3" /><rect x="70" y="104" width="100" height="12" rx="3" />
+                            </g>
+                            <rect class="arte-pacote" x="176" y="59" width="16" height="12" rx="3" />
+                        </svg>
+                    </div>
+                    <p class="selo-projeto">interativo · neste portal</p>
+                    <h3>Laboratórios da disciplina</h3>
+                    <p>Envie uma mensagem pelas camadas do OSI, monte um cabo UTP e descubra em qual camada trabalha cada coisa.</p>
                     <a class="link-seta" href="#laboratorio">Abrir o laboratório</a>
                 </article>
 
-                <!-- Troque o código abaixo a cada nova turma -->
-                <article class="painel-agora">
-                    <p class="painel-rotulo">3 · Google Sala de Aula</p>
-                    <p class="painel-valor painel-codigo"><code id="codigo-sala">g4nkpcli</code></p>
-                    <p class="painel-detalhe">Código da turma. Os slides de cada aula ficam lá.</p>
-                    <div class="painel-acoes">
-                        <button class="botao botao-linha botao-peq" type="button" id="copiar-codigo">Copiar código</button>
-                        <a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Abrir<span class="sr-only"> o Google Sala de Aula (abre em nova aba)</span></a>
+                <article class="projeto" data-tipo="jogo" data-par="verde">
+                    <div class="projeto-arte" aria-hidden="true">
+                        <svg viewBox="0 0 240 130">
+                            <g class="arte-linhas"><path d="M120 65L60 30M120 65L180 30M120 65L60 100M120 65L180 100M120 65V18" /></g>
+                            <g class="arte-nos"><circle cx="60" cy="30" r="9" /><circle cx="180" cy="30" r="9" /><circle cx="60" cy="100" r="9" /><circle cx="180" cy="100" r="9" /><circle cx="120" cy="18" r="9" /></g>
+                            <rect class="arte-switch" x="104" y="55" width="32" height="20" rx="4" />
+                        </svg>
                     </div>
-                    <p class="sr-only" id="copiar-status" aria-live="polite"></p>
+                    <p class="selo-projeto">simulado</p>
+                    <h3>Simulado · Infraestrutura e Topologias</h3>
+                    <p>Questões de revisão sobre dispositivos, domínios, topologias e meios de transmissão.</p>
+                    <a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Na Sala de Aula<span class="sr-only"> (abre em nova aba)</span></a>
                 </article>
             </div>
-
-            <h3 class="subtitulo">Avisos</h3>
-            <!--
-                COMO ADICIONAR UM AVISO
-                1. Copie um <li class="aviso"> e cole no TOPO da lista.
-                2. data-tipo: "info" (informação, azul), "prazo" (atenção, laranja) ou "ok" (liberado, verde).
-                3. Troque o rótulo (<span class="aviso-tipo">), o título e o texto.
-                Dica: mantenha no máximo 3 avisos; apague os antigos.
-            -->
-            <ul class="avisos">
-                <li class="aviso" data-tipo="ok">
-                    <span class="aviso-tipo">liberado</span>
-                    <div>
-                        <h4>Missão OSI</h4>
-                        <p>Resolva os problemas da rede usando o mapa conceitual das camadas. <a href="https://osi.profabnerlucas.com/" target="_blank" rel="noopener noreferrer">Abrir a Missão OSI<span class="sr-only"> (abre em nova aba)</span></a></p>
-                    </div>
-                </li>
-                <li class="aviso" data-tipo="info">
-                    <span class="aviso-tipo">informação</span>
-                    <div>
-                        <h4>Materiais na Sala de Aula</h4>
-                        <p>Todos os slides em PDF também estão na turma do Google Sala de Aula. Dúvidas? Fale com o professor no horário de atendimento.</p>
-                    </div>
-                </li>
-            </ul>
         </section>
 
-        <!-- ============ AULAS ============ -->
-        <section id="aulas" class="secao" data-cena>
-            <div class="secao-cabeca">
-                <p class="etiqueta"><span class="porta-mini" aria-hidden="true"></span>porta 02 · aulas</p>
-                <h2 class="titulo-secao">Aulas por unidade</h2>
-                <p class="secao-intro">Uma unidade por vez. Toque numa aula para ver os tópicos e o material.</p>
-            </div>
-
-            <!-- Cada unidade tem a cor de um par do cabo de rede. A última aba aberta fica lembrada no navegador. -->
-            <div class="abas" role="tablist" aria-label="Unidades">
-                <button role="tab" class="aba" id="aba-u1" aria-controls="u1" aria-selected="true" data-par="laranja"><span class="aba-cor" aria-hidden="true"></span>Unidade 1</button>
-                <button role="tab" class="aba" id="aba-u2" aria-controls="u2" aria-selected="false" data-par="verde" tabindex="-1"><span class="aba-cor" aria-hidden="true"></span>Unidade 2</button>
-                <button role="tab" class="aba" id="aba-u3" aria-controls="u3" aria-selected="false" data-par="azul" tabindex="-1"><span class="aba-cor" aria-hidden="true"></span>Unidade 3</button>
-                <button role="tab" class="aba" id="aba-u4" aria-controls="u4" aria-selected="false" data-par="marrom" tabindex="-1"><span class="aba-cor" aria-hidden="true"></span>Unidade 4</button>
-            </div>
-
-            <!--
-                COMO ADICIONAR UMA AULA
-                1. Dentro do painel da unidade (<div role="tabpanel">), copie um <li class="aula">.
-                2. data-tipo: "aula", "atividade" ou "avaliacao". Troque o número, o título, os tópicos e o material.
-                3. Material em PDF: coloque o arquivo em docs/ e use href="./docs/NomeDoArquivo.pdf".
-                   Enquanto o PDF estiver só na Sala de Aula, o link aponta para lá.
-            -->
-            <div class="paineis-unidade">
-                <!-- UNIDADE 1 -->
-                <div role="tabpanel" class="painel-unidade" id="u1" aria-labelledby="aba-u1" data-par="laranja">
-                    <p class="unidade-resumo"><b>Fundamentos</b> · o que é uma rede e como ela se organiza</p>
-                    <ul class="aulas">
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 1</span><span class="aula-titulo">Introdução a Redes de Computadores</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Apresentação da disciplina</li><li>Conceitos fundamentais em redes</li><li>Evolução das redes</li><li>Algumas classificações de redes</li><li>Questões sociais</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Introdução às Redes (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 2</span><span class="aula-titulo">Tipos de Redes</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Classificação das redes quanto à abrangência</li><li>Redes PAN, LAN, CAN, MAN e WAN e suas versões sem fio</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Tipos de Redes (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 3</span><span class="aula-titulo">Internet × Intranet × Extranet</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Navegando pelos mares da Net</li><li>Diferenças entre Internet, Intranet e Extranet</li><li>Benefícios e desafios do uso de Intranet e Extranet</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Internet, Intranet e Extranet (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 4</span><span class="aula-titulo">Modelos de redes</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Modelo centralizado</li><li>Modelo cliente-servidor</li><li>Modelo distribuído</li><li>Modelo ponto a ponto</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Modelos de Redes (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="atividade">
-                            <details>
-                                <summary><span class="aula-num">Prática</span><span class="aula-titulo">Palavras cruzadas e Teste de Einstein</span><span class="selo">atividade</span></summary>
-                                <div class="aula-corpo"><p>Atividade em sala: jogo de palavras cruzadas com os termos da unidade e o desafio do Teste de Einstein.</p></div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="avaliacao">
-                            <details>
-                                <summary><span class="aula-num">Fechamento</span><span class="aula-titulo">Revisão e teste avaliativo</span><span class="selo">avaliação</span></summary>
-                                <div class="aula-corpo"><p>Revisão da unidade e 1ª avaliação.</p></div>
-                            </details>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- UNIDADE 2 -->
-                <div role="tabpanel" class="painel-unidade" id="u2" aria-labelledby="aba-u2" data-par="verde" hidden>
-                    <p class="unidade-resumo"><b>Infraestrutura e topologias</b> · os equipamentos e os caminhos da rede</p>
-                    <ul class="aulas">
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 5</span><span class="aula-titulo">Dispositivos de interconexão de redes</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Placa de rede</li><li>Repetidor e hub</li><li>Ponte e modem</li><li>Switch e roteador</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Dispositivos de interconexão (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 6</span><span class="aula-titulo">Domínios e tipos de servidores</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Domínio de broadcast</li><li>Domínio de colisão</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Domínios em redes (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 7</span><span class="aula-titulo">Topologias e arquiteturas de redes</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Tipos de transmissão de dados</li><li>Topologias físicas</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Topologias (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="atividade">
-                            <details>
-                                <summary><span class="aula-num">Prática</span><span class="aula-titulo">A Vila Linkshire</span><span class="selo">atividade</span></summary>
-                                <div class="aula-corpo"><p>Atividade em sala de aula.</p></div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 8</span><span class="aula-titulo">Meios de transmissão</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Meios guiados: fios de cobre e fibra óptica</li><li>Meios não guiados</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Meios de transmissão (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="avaliacao">
-                            <details>
-                                <summary><span class="aula-num">Fechamento</span><span class="aula-titulo">Revisão e atividades avaliativas</span><span class="selo">avaliação</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Revisão da Unidade 2 (PDF)</li><li>Simulado · Unidade II: Infraestrutura e Topologias de Rede</li><li>Recuperação da 2ª avaliação</li></ul>
-                                    <p class="material">Os materiais estão na <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Sala de Aula<span class="sr-only"> (abre em nova aba)</span></a>.</p>
-                                </div>
-                            </details>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- UNIDADE 3 -->
-                <div role="tabpanel" class="painel-unidade" id="u3" aria-labelledby="aba-u3" data-par="azul" hidden>
-                    <p class="unidade-resumo"><b>Cabeamento e modelo OSI</b> · do cabo às sete camadas</p>
-                    <ul class="aulas">
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 9</span><span class="aula-titulo">Padrões em cabos Ethernet</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Padrões de pinagem T568A e T568B</li><li>Diafonia e a técnica do cancelamento</li><li>Cabo pino a pino (direto) e crossover (cruzado)</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Padrões em cabos Ethernet (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a> · Pratique no <a href="#laboratorio">laboratório do cabo UTP</a>.</p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="atividade">
-                            <details>
-                                <summary><span class="aula-num">Aula 10</span><span class="aula-titulo">Montando cabo UTP</span><span class="selo">prática</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Padrões de pinagem T568A e T568B</li><li>Confecção do cabo em sala</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Montando cabo UTP (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 11</span><span class="aula-titulo">Modelo teórico de redes: OSI</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Padronização</li><li>A ISO</li><li>O modelo OSI</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Modelo teórico de redes (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 12</span><span class="aula-titulo">Camadas do modelo OSI</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Aplicação, Apresentação e Sessão</li><li>Transporte e Rede</li><li>Enlace de Dados e Física</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Camadas do modelo OSI (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a> · Teste no <a href="#inicio">laboratório de envio</a>.</p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="avaliacao">
-                            <details>
-                                <summary><span class="aula-num">Fechamento</span><span class="aula-titulo">Revisão e teste avaliativo</span><span class="selo">avaliação</span></summary>
-                                <div class="aula-corpo">
-                                    <p>Teste em sala sobre modelo OSI e cabeamento, com questionário de apoio.</p>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Revisão · Modelo OSI e Cabeamento Ethernet (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- UNIDADE 4 -->
-                <div role="tabpanel" class="painel-unidade" id="u4" aria-labelledby="aba-u4" data-par="marrom" hidden>
-                    <p class="unidade-resumo"><b>Arquitetura TCP/IP</b> · o modelo que a internet usa de verdade</p>
-                    <ul class="aulas">
-                        <li class="aula" data-tipo="aula">
-                            <details>
-                                <summary><span class="aula-num">Aula 13</span><span class="aula-titulo">Arquitetura de redes: TCP/IP</span><span class="selo">aula</span></summary>
-                                <div class="aula-corpo">
-                                    <ul class="topicos"><li>Pilha de protocolos e camadas do TCP/IP</li><li>Elementos de interconexão</li></ul>
-                                    <p class="material">Material: <a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Modelo TCP/IP (PDF, na Sala de Aula)<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="atividade">
-                            <details>
-                                <summary><span class="aula-num">Prática</span><span class="aula-titulo">Missão OSI</span><span class="selo">atividade</span></summary>
-                                <div class="aula-corpo">
-                                    <p>Objetivo: identificar e resolver problemas ligados ao modelo OSI, usando o mapa conceitual como referência.</p>
-                                    <ul class="topicos"><li>Acesse a plataforma pelo botão abaixo</li><li>Responda com suas palavras, de acordo com o que conseguiu compreender</li></ul>
-                                    <p class="material"><a class="botao botao-cheio botao-peq" href="https://osi.profabnerlucas.com/" target="_blank" rel="noopener noreferrer">Abrir a Missão OSI<span class="sr-only"> (abre em nova aba)</span></a></p>
-                                </div>
-                            </details>
-                        </li>
-                        <li class="aula" data-tipo="avaliacao">
-                            <details>
-                                <summary><span class="aula-num">Fechamento</span><span class="aula-titulo">Avaliação final da unidade</span><span class="selo">avaliação</span></summary>
-                                <div class="aula-corpo"><p>Revisão do modelo OSI e da arquitetura TCP/IP.</p></div>
-                            </details>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+        <!-- Transição: o plugue desce e encaixa na porta da próxima seção -->
+        <div class="conexao" data-conexao aria-hidden="true">
+            <svg viewBox="0 0 120 150">
+                <path class="cx-cabo" d="M60 0v62" />
+                <g class="cx-plugue">
+                    <rect x="38" y="60" width="44" height="34" rx="4" />
+                    <path d="M44 66h32M47 66v10M52 66v10M57 66v10M62 66v10M67 66v10M72 66v10" class="cx-pinos" />
+                    <rect x="52" y="94" width="16" height="8" rx="2" />
+                </g>
+                <g class="cx-porta">
+                    <path d="M30 104h60v34H72v8H48v-8H30z" />
+                    <circle class="cx-led" cx="38" cy="112" r="3" />
+                </g>
+            </svg>
+            <span class="cx-rotulo">salto 03</span>
+        </div>
 
         <!-- ============ LABORATÓRIO (palco escuro) ============ -->
         <section id="laboratorio" class="secao secao-palco" data-cena>
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="porta-mini" aria-hidden="true"></span>porta 03 · laboratório</p>
-                <h2 class="titulo-secao">Pratique sem pressa</h2>
+                <p class="etiqueta"><span class="etiqueta-salto">salto 03</span><span class="etiqueta-ip">10.0.3.1</span><span class="etiqueta-nome">laboratório</span></p>
+                <h2 class="titulo-secao" data-palavras>Pratique sem pressa</h2>
                 <p class="secao-intro">Sem cronômetro e sem nota. Erre à vontade: a página mostra onde ajustar.</p>
             </div>
 
@@ -490,103 +386,182 @@
             </div>
         </section>
 
-        <!-- ============ MATERIAIS ============ -->
+        <!-- Transição: o plugue desce e encaixa na porta da próxima seção -->
+        <div class="conexao" data-conexao aria-hidden="true">
+            <svg viewBox="0 0 120 150">
+                <path class="cx-cabo" d="M60 0v62" />
+                <g class="cx-plugue">
+                    <rect x="38" y="60" width="44" height="34" rx="4" />
+                    <path d="M44 66h32M47 66v10M52 66v10M57 66v10M62 66v10M67 66v10M72 66v10" class="cx-pinos" />
+                    <rect x="52" y="94" width="16" height="8" rx="2" />
+                </g>
+                <g class="cx-porta">
+                    <path d="M30 104h60v34H72v8H48v-8H30z" />
+                    <circle class="cx-led" cx="38" cy="112" r="3" />
+                </g>
+            </svg>
+            <span class="cx-rotulo">salto 04</span>
+        </div>
+
+        <!-- ============ MATERIAIS (biblioteca por tema) ============ -->
         <section id="materiais" class="secao" data-cena>
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="porta-mini" aria-hidden="true"></span>porta 04 · materiais</p>
-                <h2 class="titulo-secao">Materiais e links</h2>
-                <p class="secao-intro">Os slides em PDF de cada aula estão dentro da aula, na seção Aulas. Aqui ficam os extras.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">salto 04</span><span class="etiqueta-ip">10.0.4.1</span><span class="etiqueta-nome">materiais</span></p>
+                <h2 class="titulo-secao" data-palavras>Biblioteca de materiais</h2>
+                <p class="secao-intro">Slides e revisões organizados por tema. Escolha um tema para ver menos itens de uma vez.</p>
+            </div>
+
+            <div class="filtros seletor" role="group" aria-label="Filtrar materiais por tema" data-filtro-alvo="#biblioteca">
+                <button type="button" class="filtro" data-filtro="todos" aria-pressed="true">Todos</button>
+                <span class="seletor-cursor" aria-hidden="true"></span>
+                <button type="button" class="filtro" data-filtro="fundamentos" aria-pressed="false" data-par="laranja"><span class="filtro-cor" aria-hidden="true"></span>Fundamentos</button>
+                <button type="button" class="filtro" data-filtro="infraestrutura" aria-pressed="false" data-par="verde"><span class="filtro-cor" aria-hidden="true"></span>Infraestrutura</button>
+                <button type="button" class="filtro" data-filtro="cabeamento" aria-pressed="false" data-par="azul"><span class="filtro-cor" aria-hidden="true"></span>Cabeamento</button>
+                <button type="button" class="filtro" data-filtro="modelos" aria-pressed="false" data-par="marrom"><span class="filtro-cor" aria-hidden="true"></span>OSI e TCP/IP</button>
             </div>
 
             <!--
                 COMO ADICIONAR UM MATERIAL
                 1. PDF: coloque o arquivo em docs/ e use href="./docs/NomeDoArquivo.pdf".
-                   Site: use o endereço completo e mantenha target="_blank" rel="noopener noreferrer".
-                2. Copie uma <tr> e troque unidade, nome, formato e link.
+                   Enquanto o arquivo estiver só na Sala de Aula, o link aponta para lá.
+                2. Copie um <li class="doc">; data-tipo = tema do filtro; data-par = cor do tema
+                   (fundamentos=laranja, infraestrutura=verde, cabeamento=azul, modelos=marrom).
             -->
-            <div class="tabela-envoltorio">
-                <table class="tabela">
-                    <thead>
-                        <tr><th scope="col">Unidade</th><th scope="col">Material</th><th scope="col">Formato</th><th scope="col"><span class="sr-only">Ação</span></th></tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-rotulo="Unidade"><span class="par par-marrom" aria-hidden="true"></span>4</td>
-                            <td data-rotulo="Material"><b>Missão OSI · Investigadores da Rede</b><small>Diagnóstico das 7 camadas com desafio final</small></td>
-                            <td data-rotulo="Formato">site</td>
-                            <td><a class="link-seta" href="https://osi.profabnerlucas.com/" target="_blank" rel="noopener noreferrer">abrir<span class="sr-only"> a Missão OSI (abre em nova aba)</span></a></td>
-                        </tr>
-                        <tr>
-                            <td data-rotulo="Unidade"><span class="par par-azul" aria-hidden="true"></span>3</td>
-                            <td data-rotulo="Material"><b>Revisão · Modelo OSI e Cabeamento Ethernet</b></td>
-                            <td data-rotulo="Formato">PDF</td>
-                            <td><a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Sala de Aula<span class="sr-only"> (abre em nova aba)</span></a></td>
-                        </tr>
-                        <tr>
-                            <td data-rotulo="Unidade"><span class="par par-verde" aria-hidden="true"></span>2</td>
-                            <td data-rotulo="Material"><b>Simulado · Unidade II</b><small>Infraestrutura e topologias de rede</small></td>
-                            <td data-rotulo="Formato">site</td>
-                            <td><a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Sala de Aula<span class="sr-only"> (abre em nova aba)</span></a></td>
-                        </tr>
-                        <tr>
-                            <td data-rotulo="Unidade"><span class="par par-verde" aria-hidden="true"></span>2</td>
-                            <td data-rotulo="Material"><b>Revisão da Unidade 2</b></td>
-                            <td data-rotulo="Formato">PDF</td>
-                            <td><a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Sala de Aula<span class="sr-only"> (abre em nova aba)</span></a></td>
-                        </tr>
-                        <tr>
-                            <td data-rotulo="Unidade">todas</td>
-                            <td data-rotulo="Material"><b>Livro: Redes de computadores</b><small>TORRES, Gabriel. 2. ed. Clube do Hardware, 2019</small></td>
-                            <td data-rotulo="Formato">livro</td>
-                            <td><span class="sem-link">referência básica</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <ul class="biblioteca" id="biblioteca">
+                <li class="doc" data-tipo="fundamentos" data-par="laranja"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Introdução às Redes</b><small>conceitos, evolução e classificações</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="fundamentos" data-par="laranja"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Tipos de Redes</b><small>PAN, LAN, CAN, MAN e WAN</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="fundamentos" data-par="laranja"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Internet, Intranet e Extranet</b><small>diferenças, benefícios e desafios</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="fundamentos" data-par="laranja"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Modelos de Redes</b><small>centralizado, cliente-servidor, distribuído, P2P</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="infraestrutura" data-par="verde"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Dispositivos de interconexão</b><small>placa de rede, hub, switch, roteador</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="infraestrutura" data-par="verde"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Domínios em redes</b><small>broadcast e colisão</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="infraestrutura" data-par="verde"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Topologias</b><small>tipos de transmissão e topologias físicas</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="infraestrutura" data-par="verde"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Meios de transmissão</b><small>cobre, fibra óptica e sem fio</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="infraestrutura" data-par="verde"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">REV</span><b>Revisão · Infraestrutura</b><small>resumo do tema para estudar</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="cabeamento" data-par="azul"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Padrões em cabos Ethernet</b><small>T568A, T568B, direto e crossover</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="cabeamento" data-par="azul"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Montando cabo UTP</b><small>roteiro da aula prática</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="modelos" data-par="marrom"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Modelo teórico de redes</b><small>padronização, ISO e modelo OSI</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="modelos" data-par="marrom"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Camadas do modelo OSI</b><small>da Aplicação à Física</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="modelos" data-par="marrom"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">PDF</span><b>Modelo TCP/IP</b><small>pilha de protocolos e interconexão</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+                <li class="doc" data-tipo="modelos cabeamento" data-par="marrom"><a href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="doc-formato">REV</span><b>Revisão · OSI e Cabeamento</b><small>modelo OSI e cabeamento Ethernet</small><span class="sr-only"> (abre a Sala de Aula em nova aba)</span></a></li>
+            </ul>
+            <p class="nota-biblioteca">Os arquivos ficam na turma do Google Sala de Aula. Livro de referência: TORRES, Gabriel. <i>Redes de computadores</i>. 2. ed. Clube do Hardware, 2019.</p>
         </section>
 
-        <!-- ============ TRILHA ============ -->
-        <section id="trilha" class="secao" data-cena>
+        <!-- Transição: o plugue desce e encaixa na porta da próxima seção -->
+        <div class="conexao" data-conexao aria-hidden="true">
+            <svg viewBox="0 0 120 150">
+                <path class="cx-cabo" d="M60 0v62" />
+                <g class="cx-plugue">
+                    <rect x="38" y="60" width="44" height="34" rx="4" />
+                    <path d="M44 66h32M47 66v10M52 66v10M57 66v10M62 66v10M67 66v10M72 66v10" class="cx-pinos" />
+                    <rect x="52" y="94" width="16" height="8" rx="2" />
+                </g>
+                <g class="cx-porta">
+                    <path d="M30 104h60v34H72v8H48v-8H30z" />
+                    <circle class="cx-led" cx="38" cy="112" r="3" />
+                </g>
+            </svg>
+            <span class="cx-rotulo">salto 05</span>
+        </div>
+
+        <!-- ============ SOBRE A DISCIPLINA ============ -->
+        <section id="sobre" class="secao" data-cena>
             <div class="secao-cabeca">
-                <p class="etiqueta"><span class="porta-mini" aria-hidden="true"></span>porta 05 · trilha</p>
-                <h2 class="titulo-secao">O caminho do semestre</h2>
-                <p class="secao-intro">Quatro unidades, do conceito de rede até a arquitetura TCP/IP.</p>
+                <p class="etiqueta"><span class="etiqueta-salto">salto 05</span><span class="etiqueta-ip">10.0.5.1</span><span class="etiqueta-nome">sobre</span></p>
+                <h2 class="titulo-secao" data-palavras>Sobre a disciplina</h2>
+                <p class="secao-intro">Para quem está chegando: do que trata a disciplina e o que você vai estudar.</p>
             </div>
 
-            <ol class="trilha" id="trilha-lista">
-                <li data-par="laranja">
-                    <span class="no" aria-hidden="true"></span>
-                    <h3>Unidade 1 · Fundamentos</h3>
-                    <p>O que é uma rede, tipos (PAN, LAN, MAN, WAN), Internet, Intranet e Extranet, modelos de rede.</p>
-                </li>
-                <li data-par="verde">
-                    <span class="no" aria-hidden="true"></span>
-                    <h3>Unidade 2 · Infraestrutura</h3>
-                    <p>Dispositivos (hub, switch, roteador), domínios de colisão e broadcast, topologias e meios de transmissão.</p>
-                </li>
-                <li data-par="azul">
-                    <span class="no" aria-hidden="true"></span>
-                    <h3>Unidade 3 · Cabeamento e OSI</h3>
-                    <p>Padrões T568A e T568B, montagem do cabo UTP, o modelo OSI e suas 7 camadas.</p>
-                </li>
-                <li data-par="marrom">
-                    <span class="no" aria-hidden="true"></span>
-                    <h3>Unidade 4 · TCP/IP</h3>
-                    <p>A pilha TCP/IP, elementos de interconexão e a Missão OSI.</p>
-                </li>
-            </ol>
+            <div class="sobre-grade">
+                <div class="ementa">
+                    <h3>Ementa</h3>
+                    <p>Fundamentos das redes de computadores: tipos, modelos, topologias e equipamentos. Arquiteturas de rede, com os modelos OSI e TCP/IP e as funções de cada camada. Transmissão de dados, meios e interfaces de comunicação. Prática de montagem, configuração e solução de problemas básicos em redes.</p>
+                    <dl class="ficha">
+                        <div><dt>Código</dt><dd>TIINF1647</dd></div>
+                        <div><dt>Carga horária</dt><dd>67 h</dd></div>
+                        <div><dt>Curso</dt><dd>Técnico em Informática</dd></div>
+                        <div><dt>Docente</dt><dd>Prof. Ábner Lucas</dd></div>
+                        <div><dt>Campus</dt><dd>IFPA Breves</dd></div>
+                    </dl>
+                </div>
+
+                <div class="terminal" id="trilha-lista">
+                    <p class="terminal-barra" aria-hidden="true"><span></span><span></span><span></span><b>o que você vai estudar</b></p>
+                    <p class="terminal-cmd" aria-hidden="true"><span class="prompt">$</span> traceroute redes-de-computadores</p>
+                    <ol class="traceroute">
+                        <li data-par="laranja"><span class="tr-num" aria-hidden="true">1</span><div><h3>Fundamentos</h3><p>O que é uma rede, tipos (PAN, LAN, MAN, WAN), Internet, Intranet e Extranet, modelos de rede.</p></div></li>
+                        <li data-par="verde"><span class="tr-num" aria-hidden="true">2</span><div><h3>Infraestrutura</h3><p>Hub, switch e roteador, domínios de colisão e broadcast, topologias e meios de transmissão.</p></div></li>
+                        <li data-par="azul"><span class="tr-num" aria-hidden="true">3</span><div><h3>Cabeamento</h3><p>Padrões T568A e T568B, cabo direto e crossover, montagem do cabo UTP.</p></div></li>
+                        <li data-par="marrom"><span class="tr-num" aria-hidden="true">4</span><div><h3>Modelos OSI e TCP/IP</h3><p>As 7 camadas do OSI, a pilha TCP/IP e como uma mensagem atravessa a rede.</p></div></li>
+                    </ol>
+                    <p class="terminal-fim" aria-hidden="true">destino alcançado · 4 saltos<span class="cursor"></span></p>
+                </div>
+            </div>
+
+            <h3 class="subtitulo">Mural da turma</h3>
+            <div class="mural">
+                <!-- Troque o código abaixo a cada nova turma -->
+                <article class="painel-agora painel-destaque">
+                    <p class="painel-rotulo">Google Sala de Aula</p>
+                    <p class="painel-valor painel-codigo"><code id="codigo-sala">g4nkpcli</code></p>
+                    <p class="painel-detalhe">Código da turma. Os slides ficam lá.</p>
+                    <div class="painel-acoes">
+                        <button class="botao botao-linha botao-peq" type="button" id="copiar-codigo">Copiar código</button>
+                        <a class="link-seta" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer">Abrir<span class="sr-only"> o Google Sala de Aula (abre em nova aba)</span></a>
+                    </div>
+                    <p class="sr-only" id="copiar-status" aria-live="polite"></p>
+                </article>
+                <!--
+                    COMO ADICIONAR UM AVISO
+                    Copie um <li class="aviso"> para o topo. data-tipo: "info", "prazo" ou "ok".
+                    Mantenha no máximo 3 avisos.
+                -->
+                <ul class="avisos">
+                    <li class="aviso" data-tipo="ok">
+                        <span class="aviso-tipo">liberado</span>
+                        <div>
+                            <h4>Missão OSI</h4>
+                            <p>A plataforma está aberta. <a href="https://osi.profabnerlucas.com/" target="_blank" rel="noopener noreferrer">Começar a investigação<span class="sr-only"> (abre em nova aba)</span></a></p>
+                        </div>
+                    </li>
+                    <li class="aviso" data-tipo="info">
+                        <span class="aviso-tipo">dica</span>
+                        <div>
+                            <h4>Use o painel Conforto</h4>
+                            <p>No topo da página dá para desligar as animações, aumentar o texto e trocar o tema.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </section>
     </main>
 
+    <!-- ============ RODAPÉ ============ -->
     <footer class="rodape">
-        <div class="rodape-inner">
-            <p><b>Redes de Computadores</b> · TIINF1647 · 67 h · Técnico em Informática</p>
-            <p>Prof. Ábner Lucas · IFPA Campus Breves</p>
-            <p><a href="https://github.com/abner-lucas/redes-computadores" target="_blank" rel="noopener noreferrer">Código do portal no GitHub<span class="sr-only"> (abre em nova aba)</span></a></p>
+        <div class="rodape-cabo" aria-hidden="true">
+            <span class="via v-bl"></span><span class="via v-l"></span><span class="via v-bv"></span><span class="via v-a"></span>
+            <span class="via v-ba"></span><span class="via v-v"></span><span class="via v-bm"></span><span class="via v-m"></span>
         </div>
+        <div class="rodape-inner">
+            <div class="rodape-marca">
+                <svg class="rodape-porta" viewBox="0 0 32 28" aria-hidden="true">
+                    <path class="porta-corpo" d="M3 3h26v16h-6v5H9v-5H3z" />
+                    <path class="porta-pinos" d="M9 3v6M12.5 3v6M16 3v6M19.5 3v6M23 3v6" />
+                </svg>
+                <p>Redes de Computadores</p>
+            </div>
+            <dl class="rodape-dados">
+                <div><dt>Docente</dt><dd>Prof. Ábner Lucas</dd></div>
+                <div><dt>Instituição</dt><dd>IFPA Campus Breves</dd></div>
+                <div><dt>Curso</dt><dd>Técnico em Informática</dd></div>
+                <div><dt>Disciplina</dt><dd>TIINF1647 · 67 h</dd></div>
+                <div><dt>Código</dt><dd><a href="https://github.com/abner-lucas/redes-computadores" target="_blank" rel="noopener noreferrer">github.com/abner-lucas<span class="sr-only"> (abre em nova aba)</span></a></dd></div>
+            </dl>
+        </div>
+        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · T568B · MATERIAL DIDÁTICO</p>
     </footer>
 
-    <script src="logica.js?v=2026.11.22b"></script>
-    <script src="script.js?v=2026.11.22b"></script>
+    <script src="logica.js?v=2026.11.23e"></script>
+    <script src="script.js?v=2026.11.23e"></script>
 </body>
 </html>
