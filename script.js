@@ -26,7 +26,7 @@
             calmo: function (on) { html.dataset.calmo = on ? 'sim' : 'nao'; salvar('rc:calmo', html.dataset.calmo); atualizarCenas(); },
             texto: function (on) { html.dataset.texto = on ? 'maior' : 'normal'; salvar('rc:texto', html.dataset.texto); },
             tema: function (on) {
-                var trocar = function () { html.dataset.tema = on ? 'escuro' : 'claro'; };
+                var trocar = function () { html.dataset.tema = on ? 'escuro' : 'claro'; sincronizar(); };
                 if (document.startViewTransition && !calmo()) document.startViewTransition(trocar); else trocar();
                 salvar('rc:tema', on ? 'escuro' : 'claro');
             }

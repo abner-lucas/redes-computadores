@@ -670,11 +670,11 @@ html[data-visitado] .t-sublinha::after { animation-delay: .9s; }
 @keyframes fita { to { transform: translateX(-50%); } }
 
 /* filtros com cursor deslizante */
-.seletor { position: relative; display: inline-flex; flex-wrap: wrap; padding: 5px; gap: 2px; border-radius: 18px; background: var(--cartao); border: 1px solid var(--linha-forte); }
-.seletor .filtro { position: relative; z-index: 1; border: 0; background: none; min-height: 42px; border-radius: 13px; }
-.seletor .filtro[aria-pressed="true"] { background: none; color: var(--fundo); }
+.filtros.seletor { position: relative; display: inline-flex; flex-wrap: wrap; padding: 5px; gap: 2px; border-radius: 18px; background: var(--cartao); border: 1px solid var(--linha-forte); }
+.filtros.seletor .filtro { position: relative; z-index: 1; border: 0; background: none; min-height: 42px; border-radius: 13px; }
+.filtros.seletor .filtro[aria-pressed="true"] { background: none; color: var(--fundo); }
 .seletor-cursor { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 13px; background: var(--tinta); transition: transform .5s var(--easing), width .5s var(--easing), height .5s var(--easing); }
-:root[data-calmo="sim"] .seletor .filtro[aria-pressed="true"], html:not(.js) .seletor .filtro[aria-pressed="true"] { background: var(--tinta); }
+:root[data-calmo="sim"] .filtros.seletor .filtro[aria-pressed="true"], html:not(.js) .filtros.seletor .filtro[aria-pressed="true"] { background: var(--tinta); }
 
 /* traceroute: cada salto acende quando a leitura chega nele */
 .traceroute li { transition: opacity .5s var(--easing); }
