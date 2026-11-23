@@ -497,4 +497,41 @@
         iniciar();
         ligarAbas($('#laboratorio .abas'));
     })();
+
+    /* ---------- subpáginas de laboratório: checklist de etapas salvo no navegador ---------- */
+    (function () {
+        var roteiro = $('[data-roteiro]');
+        if (!roteiro) return;
+        var chave = 'rc:lab:' + roteiro.dataset.roteiro;
+        var checks = $$('input[type="checkbox"][data-etapa]', roteiro);
+        var barra = $('#lab-progresso-barra'), txt = $('#lab-progresso-texto'), bLimpar = $('#lab-progresso-limpar');
+        var salvos = {};
+        try { salvos = JSON.parse(localStorage.getItem(chave) || '{}'); } catch (e) { salvos = {}; }
+
+        function atualizar() {
+            var feitos = 0;
+            checks.forEach(function (c) {
+                var card = c.closest('.etapa-card');
+                if (card) card.classList.toggle('concluida', c.checked);
+                if (c.checked) feitos++;
+                salvos[c.dataset.etapa] = c.checked;
+            });
+            try { localStorage.setItem(chave, JSON.stringify(salvos)); } catch (e) { /* sem armazenamento */ }
+            var pct = checks.length ? Math.round((feitos / checks.length) * 100) : 0;
+            if (barra) barra.style.width = pct + '%';
+            if (txt) txt.textContent = feitos + ' de ' + checks.length + ' etapas concluídas (' + pct + '%)';
+        }
+
+        checks.forEach(function (c) {
+            if (salvos[c.dataset.etapa]) c.checked = true;
+            c.addEventListener('change', atualizar);
+        });
+        if (bLimpar) {
+            bLimpar.addEventListener('click', function () {
+                checks.forEach(function (c) { c.checked = false; });
+                atualizar();
+            });
+        }
+        atualizar();
+    })();
 })();

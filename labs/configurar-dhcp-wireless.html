@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 03 · Configuração do DHCP em um Roteador Wireless · Redes de Computadores</title>
+    <meta name="description" content="Laboratório prático estilo Activity (.pka) no Cisco Packet Tracer: adição de 3 PCs, configuração de faixa DHCP personalizada (192.168.5.126 para 75 usuários) em roteador sem fio.">
+    <meta name="theme-color" content="#0a1020">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
+    <script>
+        (function () {
+            var h = document.documentElement;
+            function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+            var tema = ler('rc:tema');
+            h.dataset.tema = (tema ? tema === 'escuro' : true) ? 'escuro' : 'claro';
+            var calmo = ler('rc:calmo');
+            h.dataset.calmo = calmo ? calmo : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'sim' : 'nao');
+            h.dataset.texto = ler('rc:texto') || 'normal';
+            h.classList.add('js');
+            h.dataset.visitado = '';
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css?v=2026.11.23h">
+</head>
+<body class="pagina-lab" data-par="azul">
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="topo" id="topo">
+        <div class="topo-inner">
+            <a href="../index.html#projetos" class="lab-topo-voltar" aria-label="Voltar ao portal principal">← Voltar ao portal</a>
+            <a href="../index.html" class="marca" aria-label="Redes de Computadores">
+                <svg class="marca-porta" viewBox="0 0 32 28" aria-hidden="true">
+                    <path class="porta-corpo" d="M3 3h26v16h-6v5H9v-5H3z" />
+                    <path class="porta-pinos" d="M9 3v6M12.5 3v6M16 3v6M19.5 3v6M23 3v6" />
+                </svg>
+                <span class="marca-texto">Redes <em>de Computadores</em></span>
+            </a>
+            <div class="topo-acoes">
+                <button class="botao-conforto" id="botao-conforto" type="button" aria-expanded="false" aria-controls="painel-conforto">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2.2" /><circle cx="10" cy="17" r="2.2" /></svg>
+                    <span>Conforto</span>
+                </button>
+            </div>
+        </div>
+        <div class="painel-conforto" id="painel-conforto" role="group" aria-label="Ajustes de conforto" hidden>
+            <p class="painel-titulo">Deixe a página do seu jeito</p>
+            <button type="button" class="chave" data-ajuste="calmo" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Modo calmo</b><small>Desliga animações e movimentos</small></span>
+            </button>
+            <button type="button" class="chave" data-ajuste="texto" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Texto maior</b><small>Aumenta letras e espaços</small></span>
+            </button>
+            <button type="button" class="chave" data-ajuste="tema" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Tema escuro</b><small>Menos brilho na tela</small></span>
+            </button>
+        </div>
+    </header>
+
+    <main id="conteudo">
+        <!-- HERO E DOWNLOAD -->
+        <section class="lab-hero">
+            <div class="lab-hero-grade">
+                <div>
+                    <p class="etiqueta"><span class="etiqueta-salto">lab 03 · .pka</span><span class="etiqueta-ip">192.168.5.126 → .200</span><span class="etiqueta-nome">servidor DHCP wireless</span></p>
+                    <h1 class="titulo-secao">Configuração do DHCP em um Roteador Wireless</h1>
+                    <p class="secao-intro">Adicione 3 computadores à topologia, conecte-os às portas GigabitEthernet do roteador sem fio, altere o endereço da LAN do roteador de <code>192.168.0.1</code> para <code>192.168.5.1</code> e personalize o escopo do servidor DHCP para iniciar em <code>192.168.5.126</code> atendendo até <code>75</code> clientes simultâneos.</p>
+                    <ul class="lab-meta">
+                        <li><b>Gateway LAN:</b> 192.168.5.1/24</li>
+                        <li><b>IP Inicial DHCP:</b> 192.168.5.126</li>
+                        <li><b>Máx. Usuários:</b> 75 clientes</li>
+                        <li><b>Correção de Bug:</b> Validação APIPA corrigida</li>
+                    </ul>
+                </div>
+
+                <aside class="cartao-download" aria-label="Download do arquivo Packet Tracer Activity">
+                    <span class="cartao-download-selo">Laboratório Avaliativo (.pka) · Corrigido em Português</span>
+                    <h2>Baixar Laboratório 03 (.PKA)</h2>
+                    <p>No arquivo original, o gabarito comparava os PCs com IPs APIPA (<code>169.254.x.x</code>) gravados antes do Spanning Tree convergir. Corrigimos a árvore de avaliação no XML para validar a ativação real do cliente DHCP nos 3 PCs + escopo DHCP do roteador!</p>
+                    <div class="arquivo-nome">Lab_03_Configurar_DHCP_Roteador_Sem_Fio.pka</div>
+                    <div class="botoes">
+                        <a class="botao botao-cheio" href="./arquivos/Lab_03_Configurar_DHCP_Roteador_Sem_Fio.pka" download>Baixar arquivo .PKA</a>
+                        <a class="botao botao-linha" href="#roteiro">Seguir passo a passo</a>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- DIAGRAMA SVG DO ESCOPO DHCP -->
+            <div class="diagrama-caixa">
+                <div class="diagrama-cabeca">
+                    <h3>Diagrama da Topologia Final · Roteador Wireless (Pool DHCP) e 3 Clientes</h3>
+                    <span>Escopo DHCP: 192.168.5.126 a 192.168.5.200 (75 endereços) · Máscara 255.255.255.0</span>
+                </div>
+                <svg class="diagrama-svg" viewBox="0 0 920 260" role="img" aria-label="Diagrama mostrando o DHCP Enabled Router com IP 192.168.5.1 conectado por cabos diretos às portas GigabitEthernet 1, 2 e 3 para PC0 (192.168.5.126), PC1 (192.168.5.127) e PC2 (192.168.5.128)">
+                    <!-- Cabos Ethernet Diretos -->
+                    <g stroke="#7fd39c" stroke-width="2.8">
+                        <line x1="340" y1="115" x2="550" y2="55"/>
+                        <line x1="340" y1="130" x2="550" y2="130"/>
+                        <line x1="340" y1="145" x2="550" y2="205"/>
+                    </g>
+
+                    <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#e8eef8">
+                        <!-- Roteador Sem Fio -->
+                        <rect x="50" y="70" width="290" height="120" rx="14" fill="#111a30" stroke="#7fd6ff" stroke-width="2.2"/>
+                        <text x="68" y="98" font-weight="700" font-size="13" fill="#fff">DHCP Enabled Router</text>
+                        <text x="68" y="120" fill="#7fd6ff">IP da LAN (Gateway): 192.168.5.1 /24</text>
+                        <text x="68" y="142" fill="#f0a067">Start IP Address: 192.168.5.126</text>
+                        <text x="68" y="164" fill="#7fd39c">Maximum Users: 75 (até 192.168.5.200)</text>
+
+                        <!-- PC0 -->
+                        <rect x="550" y="22" width="310" height="62" rx="10" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
+                        <text x="566" y="46" font-weight="700" fill="#fff">PC0 (Porta GigabitEthernet 1)</text>
+                        <text x="566" y="68" fill="#7fd39c">DHCP Lease 1: 192.168.5.126 /24 (GW: 192.168.5.1)</text>
+
+                        <!-- PC1 -->
+                        <rect x="550" y="99" width="310" height="62" rx="10" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
+                        <text x="566" y="123" font-weight="700" fill="#fff">PC1 (Porta GigabitEthernet 2)</text>
+                        <text x="566" y="145" fill="#7fd39c">DHCP Lease 2: 192.168.5.127 /24 (GW: 192.168.5.1)</text>
+
+                        <!-- PC2 -->
+                        <rect x="550" y="176" width="310" height="62" rx="10" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
+                        <text x="566" y="200" font-weight="700" fill="#fff">PC2 (Porta GigabitEthernet 3)</text>
+                        <text x="566" y="222" fill="#7fd39c">DHCP Lease 3: 192.168.5.128 /24 (GW: 192.168.5.1)</text>
+                    </g>
+                </svg>
+            </div>
+        </section>
+
+        <!-- ENGENHARIA REVERSA: CRITÉRIOS DE CORREÇÃO -->
+        <section class="secao">
+            <div class="secao-cabeca">
+                <p class="etiqueta"><span class="etiqueta-salto">engenharia reversa</span><span class="etiqueta-ip">6 pontos (100%)</span><span class="etiqueta-nome">critérios avaliados</span></p>
+                <h2 class="titulo-secao">O que o Avaliador Automático (.PKA) Corrige</h2>
+                <p class="secao-intro">Após a nossa correção de engenharia reversa no XML do laboratório, a atividade avalia de forma limpa e determinística os 6 parâmetros abaixo:</p>
+            </div>
+
+            <div class="tabela-envoltorio">
+                <table class="tabela">
+                    <thead>
+                        <tr>
+                            <th>Dispositivo</th>
+                            <th>Parâmetro na Árvore <code>&lt;COMPARISONS&gt;</code></th>
+                            <th>Valor Esperado</th>
+                            <th>Pontos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>DHCP Enabled Router</b></td>
+                            <td><code>DHCP Server → Pool linksysPool → Default Gateway</code></td>
+                            <td><code>192.168.5.1</code></td>
+                            <td>1 pt</td>
+                        </tr>
+                        <tr>
+                            <td><b>DHCP Enabled Router</b></td>
+                            <td><code>DHCP Server → Pool linksysPool → Start IP address</code></td>
+                            <td><code>192.168.5.126</code></td>
+                            <td>1 pt</td>
+                        </tr>
+                        <tr>
+                            <td><b>DHCP Enabled Router</b></td>
+                            <td><code>DHCP Server → Pool linksysPool → Max User</code></td>
+                            <td><code>75</code></td>
+                            <td>1 pt</td>
+                        </tr>
+                        <tr>
+                            <td><b>PC0</b>, <b>PC1</b> e <b>PC2</b></td>
+                            <td><code>Ports → FastEthernet0 → DHCP client enable</code></td>
+                            <td><code>1</code> (Modo DHCP ativado nos 3 PCs)</td>
+                            <td>3 pts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ROTEIRO PASSO A PASSO -->
+        <section class="secao" id="roteiro" data-roteiro="lab-03">
+            <div class="secao-cabeca">
+                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">100% visual</span><span class="etiqueta-nome">roteiro guiado</span></p>
+                <h2 class="titulo-secao">Etapas para Concluir 100% do Laboratório</h2>
+                <p class="secao-intro">Abra o arquivo <code>Lab_03_Configurar_DHCP_Roteador_Sem_Fio.pka</code> no Cisco Packet Tracer e siga os 4 passos abaixo.</p>
+            </div>
+
+            <div class="progresso-barra-env" aria-live="polite">
+                <div class="progresso-info">
+                    <span id="lab-progresso-texto">0 de 4 etapas concluídas (0%)</span>
+                </div>
+                <div class="progresso-trilho">
+                    <div class="progresso-preenchimento" id="lab-progresso-barra"></div>
+                </div>
+                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Desmarcar tudo</button>
+            </div>
+
+            <ol class="roteiro-lista">
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="1">
+                            <span>Parte 1: Adicionar 3 Computadores (PC0, PC1 e PC2) e conectá-los ao Roteador</span>
+                        </label>
+                        <span class="etapa-num">Etapa 01</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>No menu inferior esquerdo, clique em <b>End Devices</b> → <b>End Devices</b> e arraste <b>3 computadores genéricos (<code>PC-PT</code>)</b> para a tela (eles receberão automaticamente os nomes <code>PC0</code>, <code>PC1</code> e <code>PC2</code>).</li>
+                            <li>Em <b>Connections (⚡)</b>, selecione o cabo <b>Copper Straight-Through</b> (Cabo Direto) e conecte:
+                                <ul>
+                                    <li><code>PC0</code> (<b>FastEthernet0</b>) ↔ <code>DHCP Enabled Router</code> (<b>GigabitEthernet 1</b>)</li>
+                                    <li><code>PC1</code> (<b>FastEthernet0</b>) ↔ <code>DHCP Enabled Router</code> (<b>GigabitEthernet 2</b>)</li>
+                                    <li><code>PC2</code> (<b>FastEthernet0</b>) ↔ <code>DHCP Enabled Router</code> (<b>GigabitEthernet 3</b>)</li>
+                                </ul>
+                            </li>
+                            <li>Clique no botão <b>Fast Forward Time</b> (duas setas verdes no canto inferior esquerdo) para que as luzes laranjas do Spanning Tree fiquem verdes imediatamente.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="2">
+                            <span>Partes 2 e 3: Ativar DHCP no PC0 e alterar o IP do Roteador para 192.168.5.1</span>
+                        </label>
+                        <span class="etapa-num">Etapa 02</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Clique em <b>PC0</b> → guia <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b> (observe que o gateway padrão original é <code>192.168.0.1</code>).</li>
+                            <li>Abra o <b>Web Browser</b> do <b>PC0</b>, digite <code>192.168.0.1</code> na URL e faça login com usuário <code>admin</code> e senha <code>admin</code>.</li>
+                            <li>Na seção <b>Network Setup → Router IP</b>, altere o <b>Local IP Address</b> de <code>192.168.0.1</code> para <code>192.168.5.1</code>.</li>
+                            <li>Role até o fim da página e clique em <b>Save Settings</b> (o navegador dará <em>Request Timeout</em> porque o IP do roteador mudou de sub-rede).</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="3">
+                            <span>Parte 4: Renovar o IP do PC0 e configurar o Escopo DHCP (192.168.5.126 e 75 usuários)</span>
+                        </label>
+                        <span class="etapa-num">Etapa 03</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>No <b>PC0</b>, abra <b>IP Configuration</b>, clique em <b>Static</b> e depois novamente em <b>DHCP</b> para renovar o endereço na nova rede <code>192.168.5.0/24</code>.</li>
+                            <li>Abra o <b>Web Browser</b> do <b>PC0</b>, acesse o novo endereço do roteador <code>192.168.5.1</code> e faça login com <code>admin</code> / <code>admin</code>.</li>
+                            <li>Em <b>DHCP Server Setting</b>:
+                                <ul>
+                                    <li>Altere o <b>Start IP Address</b> (Endereço IP Inicial) de <code>192.168.5.100</code> para <code>192.168.5.126</code>.</li>
+                                    <li>Altere o <b>Maximum Number of Users</b> (Número Máximo de Usuários) de <code>50</code> para <code>75</code>.</li>
+                                </ul>
+                            </li>
+                            <li>Role até o final da página e clique em <b>Save Settings</b>.</li>
+                            <li>Volte em <b>IP Configuration</b> do <b>PC0</b>, clique em <b>Static</b> e depois em <b>DHCP</b>: agora ele receberá o primeiro endereço da nova faixa (<code>192.168.5.126</code>)!</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="4">
+                            <span>Partes 5 e 6: Ativar o DHCP no PC1 e no PC2 e testar conectividade com Ping</span>
+                        </label>
+                        <span class="etapa-num">Etapa 04</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Clique em <b>PC1</b> → <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b> (ele receberá o IP <code>192.168.5.127</code>).</li>
+                            <li>Clique em <b>PC2</b> → <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b> (ele receberá o IP <code>192.168.5.128</code>).</li>
+                            <li>Confira o indicador de conclusão da atividade: <b>100% (6/6 pontos)</b>!</li>
+                            <li>Se desejar testar no <b>Command Prompt</b> do <b>PC2</b>, execute <code>ping 192.168.5.1</code> (roteador), <code>ping 192.168.5.126</code> (PC0) e <code>ping 192.168.5.127</code> (PC1).</li>
+                        </ol>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <!-- NAVEGAÇÃO ENTRE OS 5 LABORATÓRIOS -->
+        <section class="secao">
+            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer</h3>
+            <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
+                <a class="lab-nav-item" href="./rede-fisica-local.html" data-par="azul">
+                    <small>Prática 01 · .PKT</small>
+                    <b>Criação de Rede Física Local</b>
+                </a>
+                <a class="lab-nav-item" href="./rede-wan-dns-web.html" data-par="verde">
+                    <small>Prática 02 · .PKT</small>
+                    <b>Rede WAN Completa (DNS + Web)</b>
+                </a>
+                <a class="lab-nav-item" href="./roteador-sem-fio.html" data-par="laranja">
+                    <small>Lab 01 · .PKA</small>
+                    <b>Configurar Roteador Sem Fio e Clientes</b>
+                </a>
+                <a class="lab-nav-item" href="./conectar-servidor-web.html" data-par="marrom">
+                    <small>Lab 02 · .PKA</small>
+                    <b>Conectar-se a um Servidor Web</b>
+                </a>
+                <a class="lab-nav-item" href="./configurar-dhcp-wireless.html" aria-current="page" data-par="azul">
+                    <small>Lab 03 · .PKA</small>
+                    <b>Configuração de DHCP em Roteador Wireless</b>
+                </a>
+            </nav>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <div class="rodape-cabo" aria-hidden="true">
+            <span class="via v-bl"></span><span class="via v-l"></span><span class="via v-bv"></span><span class="via v-a"></span>
+            <span class="via v-ba"></span><span class="via v-v"></span><span class="via v-bm"></span><span class="via v-m"></span>
+        </div>
+        <div class="rodape-inner">
+            <div class="rodape-marca">
+                <svg class="rodape-porta" viewBox="0 0 32 28" aria-hidden="true">
+                    <path class="porta-corpo" d="M3 3h26v16h-6v5H9v-5H3z" />
+                    <path class="porta-pinos" d="M9 3v6M12.5 3v6M16 3v6M19.5 3v6M23 3v6" />
+                </svg>
+                <p>Redes de Computadores</p>
+            </div>
+            <dl class="rodape-dados">
+                <div><dt>Docente</dt><dd>Prof. Ábner Lucas</dd></div>
+                <div><dt>Instituição</dt><dd>IFPA Campus Breves</dd></div>
+                <div><dt>Curso</dt><dd>Técnico em Informática</dd></div>
+                <div><dt>Disciplina</dt><dd>TIINF1647 · 67 h</dd></div>
+            </dl>
+        </div>
+        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · LAB 03 · SERVIDOR DHCP WIRELESS</p>
+    </footer>
+
+    <script src="../logica.js?v=2026.11.23h"></script>
+    <script src="../script.js?v=2026.11.23h"></script>
+</body>
+</html>

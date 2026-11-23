@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 01 · Configurar um Roteador Sem Fio e Clientes · Redes de Computadores</title>
+    <meta name="description" content="Laboratório prático estilo Activity (.pka) no Cisco Packet Tracer: conexão coaxial e Ethernet, configuração de roteador Wi-Fi, DHCP, senha administrativa e segurança WPA2 Personal.">
+    <meta name="theme-color" content="#0a1020">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2230'/%3E%3Cpath d='M8 11h16v11h-4v3h-8v-3H8z' fill='none' stroke='%2384aee0' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M12 11v4M15 11v4M18 11v4M21 11v4' stroke='%23e69a64' stroke-width='1.6'/%3E%3C/svg%3E">
+    <script>
+        (function () {
+            var h = document.documentElement;
+            function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+            var tema = ler('rc:tema');
+            h.dataset.tema = (tema ? tema === 'escuro' : true) ? 'escuro' : 'claro';
+            var calmo = ler('rc:calmo');
+            h.dataset.calmo = calmo ? calmo : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'sim' : 'nao');
+            h.dataset.texto = ler('rc:texto') || 'normal';
+            h.classList.add('js');
+            h.dataset.visitado = '';
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css?v=2026.11.23h">
+</head>
+<body class="pagina-lab" data-par="laranja">
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="topo" id="topo">
+        <div class="topo-inner">
+            <a href="../index.html#projetos" class="lab-topo-voltar" aria-label="Voltar ao portal principal">← Voltar ao portal</a>
+            <a href="../index.html" class="marca" aria-label="Redes de Computadores">
+                <svg class="marca-porta" viewBox="0 0 32 28" aria-hidden="true">
+                    <path class="porta-corpo" d="M3 3h26v16h-6v5H9v-5H3z" />
+                    <path class="porta-pinos" d="M9 3v6M12.5 3v6M16 3v6M19.5 3v6M23 3v6" />
+                </svg>
+                <span class="marca-texto">Redes <em>de Computadores</em></span>
+            </a>
+            <div class="topo-acoes">
+                <button class="botao-conforto" id="botao-conforto" type="button" aria-expanded="false" aria-controls="painel-conforto">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2.2" /><circle cx="10" cy="17" r="2.2" /></svg>
+                    <span>Conforto</span>
+                </button>
+            </div>
+        </div>
+        <div class="painel-conforto" id="painel-conforto" role="group" aria-label="Ajustes de conforto" hidden>
+            <p class="painel-titulo">Deixe a página do seu jeito</p>
+            <button type="button" class="chave" data-ajuste="calmo" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Modo calmo</b><small>Desliga animações e movimentos</small></span>
+            </button>
+            <button type="button" class="chave" data-ajuste="texto" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Texto maior</b><small>Aumenta letras e espaços</small></span>
+            </button>
+            <button type="button" class="chave" data-ajuste="tema" aria-pressed="false">
+                <span class="chave-trilho" aria-hidden="true"><span></span></span>
+                <span><b>Tema escuro</b><small>Menos brilho na tela</small></span>
+            </button>
+        </div>
+    </header>
+
+    <main id="conteudo">
+        <!-- HERO E DOWNLOAD -->
+        <section class="lab-hero">
+            <div class="lab-hero-grade">
+                <div>
+                    <p class="etiqueta"><span class="etiqueta-salto">lab 01 · .pka</span><span class="etiqueta-ip">192.168.0.1/24</span><span class="etiqueta-nome">roteador sem fio e clientes</span></p>
+                    <h1 class="titulo-secao">Configurar um Roteador Sem Fio e Clientes</h1>
+                    <p class="secao-intro">Laboratório guiado com correção automática (19 pontos): conecte o divisor coaxial à TV e ao Cable Modem, interligue o roteador sem fio e os PCs via cabo Ethernet, limite o DHCP para 10 usuários, configure a rede Wi-Fi 2,4 GHz (SSID <code>MyHome</code> com segurança <code>WPA2 Personal</code>) e conecte o Laptop.</p>
+                    <ul class="lab-meta">
+                        <li><b>19</b> Itens Avaliados Automaticamente</li>
+                        <li><b>SSID:</b> MyHome (WPA2-AES)</li>
+                        <li><b>DHCP:</b> Máx. 10 Usuários</li>
+                        <li><b>Correção de Bug:</b> Senha <code>MyPassword1!</code> alinhada</li>
+                    </ul>
+                </div>
+
+                <aside class="cartao-download" aria-label="Download do arquivo Packet Tracer Activity">
+                    <span class="cartao-download-selo">Laboratório Avaliativo (.pka) · Corrigido em Português</span>
+                    <h2>Baixar Laboratório 01 (.PKA)</h2>
+                    <p>No arquivo original da Cisco, o enunciado pedia a senha <code>MyPassword1!</code> mas o gabarito interno aceitava apenas <code>MyPassword</code> (travando em 94%). Neste arquivo corrigido por engenharia reversa, o gabarito aceita <code>MyPassword1!</code> e chega a 100%!</p>
+                    <div class="arquivo-nome">Lab_01_Roteador_Sem_Fio_e_Clientes.pka</div>
+                    <div class="botoes">
+                        <a class="botao botao-cheio" href="./arquivos/Lab_01_Roteador_Sem_Fio_e_Clientes.pka" download>Baixar arquivo .PKA</a>
+                        <a class="botao botao-linha" href="#roteiro">Seguir passo a passo</a>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- DIAGRAMA SVG DA REDE RESIDENCIAL COM CABO COAXIAL, ETHERNET E WI-FI -->
+            <div class="diagrama-caixa">
+                <div class="diagrama-cabeca">
+                    <h3>Diagrama da Rede Residencial · Divisor Coaxial, Cable Modem, Roteador Wi-Fi e Clientes</h3>
+                    <span>Azul Trançado = Coaxial | Verde = Cabo Direto Ethernet | Laranja Pontilhado = Wi-Fi 2,4 GHz</span>
+                </div>
+                <svg class="diagrama-svg" viewBox="0 0 920 310" role="img" aria-label="Diagrama mostrando o Coaxial Splitter0 enviando cabo coaxial para a TV0 e para o Cable Modem, que se liga à porta Internet do Home Wireless Router, distribuindo Ethernet para Office PC e Bedroom PC e Wi-Fi para o Laptop">
+                    <!-- Enlaces Coaxiais (Azul) -->
+                    <g stroke="#7fd6ff" stroke-width="3">
+                        <line x1="120" y1="145" x2="210" y2="145"/>
+                        <line x1="340" y1="130" x2="430" y2="75"/>
+                        <line x1="340" y1="160" x2="430" y2="205"/>
+                    </g>
+                    <!-- Enlaces Ethernet Diretos (Verde) -->
+                    <g stroke="#7fd39c" stroke-width="2.5">
+                        <line x1="560" y1="205" x2="620" y2="155"/>
+                        <line x1="755" y1="130" x2="800" y2="65"/>
+                        <line x1="755" y1="150" x2="800" y2="150"/>
+                    </g>
+                    <!-- Enlace Wi-Fi (Laranja Pontilhado) -->
+                    <g stroke="#f0a067" stroke-width="2.5" stroke-dasharray="6 5">
+                        <line x1="755" y1="170" x2="800" y2="235"/>
+                    </g>
+
+                    <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#e8eef8">
+                        <!-- Provedor ISP -->
+                        <rect x="20" y="115" width="100" height="60" rx="10" fill="#111a30" stroke="#7fd6ff" stroke-width="1.8"/>
+                        <text x="32" y="140" font-weight="700" fill="#fff">Provedor ISP</text>
+                        <text x="28" y="158" font-size="9.5" fill="#7fd6ff">skillsforall.srv</text>
+
+                        <!-- Divisor Coaxial -->
+                        <rect x="210" y="115" width="130" height="60" rx="10" fill="#16213d" stroke="#7fd6ff" stroke-width="1.8"/>
+                        <text x="220" y="138" font-weight="700" fill="#fff">Coaxial Splitter0</text>
+                        <text x="220" y="156" font-size="9.5" fill="#a3b3cf">Coax1 (Modem) | Coax2 (TV)</text>
+
+                        <!-- TV0 -->
+                        <rect x="430" y="45" width="130" height="58" rx="10" fill="#16213d" stroke="#7fd6ff" stroke-width="1.8"/>
+                        <text x="442" y="68" font-weight="700" fill="#fff">TV0 (Televisão)</text>
+                        <text x="442" y="86" font-size="9.5" fill="#7fd6ff">Port 0 · Status: ON</text>
+
+                        <!-- Cable Modem -->
+                        <rect x="430" y="175" width="130" height="60" rx="10" fill="#16213d" stroke="#7fd39c" stroke-width="1.8"/>
+                        <text x="442" y="198" font-weight="700" fill="#fff">Cable Modem</text>
+                        <text x="442" y="216" font-size="9.5" fill="#7fd39c">Port 0 (Coax) | Port 1 (ETH)</text>
+
+                        <!-- Home Wireless Router -->
+                        <rect x="615" y="105" width="140" height="88" rx="12" fill="#111a30" stroke="#f0a067" stroke-width="2.2"/>
+                        <text x="625" y="128" font-weight="700" fill="#fff">Home Wireless</text>
+                        <text x="625" y="144" font-weight="700" fill="#fff">Router</text>
+                        <text x="625" y="162" font-size="9.5" fill="#7fd39c">LAN: 192.168.0.1 (Máx 10)</text>
+                        <text x="625" y="178" font-size="9.5" fill="#f0a067">SSID: MyHome (WPA2)</text>
+
+                        <!-- Clientes -->
+                        <rect x="800" y="35" width="105" height="55" rx="8" fill="#16213d" stroke="#7fd39c"/>
+                        <text x="812" y="57" font-weight="700" fill="#fff">Office PC</text>
+                        <text x="812" y="75" font-size="9.5" fill="#7fd39c">Gig 1 · DHCP</text>
+
+                        <rect x="800" y="122" width="105" height="55" rx="8" fill="#16213d" stroke="#7fd39c"/>
+                        <text x="812" y="144" font-weight="700" fill="#fff">Bedroom PC</text>
+                        <text x="812" y="162" font-size="9.5" fill="#7fd39c">Gig 2 · DHCP</text>
+
+                        <rect x="800" y="210" width="105" height="55" rx="8" fill="#16213d" stroke="#f0a067"/>
+                        <text x="812" y="232" font-weight="700" fill="#fff">Laptop</text>
+                        <text x="812" y="250" font-size="9.5" fill="#f0a067">Wi-Fi: MyHome</text>
+                    </g>
+                </svg>
+            </div>
+        </section>
+
+        <!-- ENGENHARIA REVERSA: O QUE O ARQUIVO .PKA AVALIA -->
+        <section class="secao">
+            <div class="secao-cabeca">
+                <p class="etiqueta"><span class="etiqueta-salto">engenharia reversa</span><span class="etiqueta-ip">19 pontos (100%)</span><span class="etiqueta-nome">árvore de avaliação</span></p>
+                <h2 class="titulo-secao">O que o Avaliador Automático (.PKA) Corrige</h2>
+                <p class="secao-intro">Extraímos da árvore <code>&lt;COMPARISONS&gt;</code> exatamente os 19 itens verificados pelo Packet Tracer para atribuir 100% de conclusão na atividade.</p>
+            </div>
+
+            <div class="tabela-envoltorio">
+                <table class="tabela">
+                    <thead>
+                        <tr>
+                            <th>Dispositivo</th>
+                            <th>Propriedade Verificada</th>
+                            <th>Valor Exigido no Gabarito</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>Coaxial Splitter0</b></td>
+                            <td>Porta <code>Coaxial1</code> e Porta <code>Coaxial2</code></td>
+                            <td>Cabo Coaxial ligado à <code>Port 0</code> do <b>Cable Modem</b> e à <code>Port 0</code> da <b>TV0</b></td>
+                            <td>4 pts</td>
+                        </tr>
+                        <tr>
+                            <td><b>Home Wireless Router</b></td>
+                            <td>Porta <code>Internet</code> (WAN)</td>
+                            <td>Cabo Par Trançado Direto ligado à <code>Port 1</code> do <b>Cable Modem</b></td>
+                            <td>2 pts</td>
+                        </tr>
+                        <tr>
+                            <td><b>Office PC</b> e <b>Bedroom PC</b></td>
+                            <td>Porta <code>FastEthernet0</code> e Cliente DHCP</td>
+                            <td>Ligados às portas <code>GigabitEthernet 1</code> e <code>GigabitEthernet 2</code> + <b>DHCP Ativo</b></td>
+                            <td>4 pts</td>
+                        </tr>
+                        <tr>
+                            <td><b>Home Wireless Router</b></td>
+                            <td>Servidor DHCP (<code>Max User</code>) e Senha Admin</td>
+                            <td>Maximum Number of Users = <code>10</code> | Senha do Roteador = <code>MyPassword1!</code></td>
+                            <td>2 pts</td>
+                        </tr>
+                        <tr>
+                            <td><b>Home Wireless Router</b></td>
+                            <td>Wireless 2,4 GHz (SSID + Segurança)</td>
+                            <td>SSID = <code>MyHome</code> | Modo = <code>WPA2 Personal</code> (AES) | Senha = <code>MyPassPhrase1!</code></td>
+                            <td>4 pts</td>
+                        </tr>
+                        <tr>
+                            <td><b>Laptop</b></td>
+                            <td>Conexão Sem Fio (<code>Wireless0</code>)</td>
+                            <td>Conectado ao SSID <code>MyHome</code> com a chave <code>MyPassPhrase1!</code></td>
+                            <td>3 pts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ROTEIRO PASSO A PASSO -->
+        <section class="secao" id="roteiro" data-roteiro="lab-01">
+            <div class="secao-cabeca">
+                <p class="etiqueta"><span class="etiqueta-salto">passo a passo</span><span class="etiqueta-ip">3 partes guiadas</span><span class="etiqueta-nome">roteiro completo</span></p>
+                <h2 class="titulo-secao">Etapas para Concluir 100% do Laboratório</h2>
+                <p class="secao-intro">Abra o arquivo <code>Lab_01_Roteador_Sem_Fio_e_Clientes.pka</code> no Cisco Packet Tracer e marque cada etapa abaixo conforme realizar as ações.</p>
+            </div>
+
+            <div class="progresso-barra-env" aria-live="polite">
+                <div class="progresso-info">
+                    <span id="lab-progresso-texto">0 de 5 etapas concluídas (0%)</span>
+                </div>
+                <div class="progresso-trilho">
+                    <div class="progresso-preenchimento" id="lab-progresso-barra"></div>
+                </div>
+                <button type="button" class="botao botao-texto botao-peq" id="lab-progresso-limpar">Desmarcar tudo</button>
+            </div>
+
+            <ol class="roteiro-lista">
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="1">
+                            <span>Parte 1 (Etapa 1): Conectar os 2 Cabos Coaxiais e ligar a TV</span>
+                        </label>
+                        <span class="etapa-num">Etapa 01</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Em <b>Connections (⚡)</b>, clique no ícone azul em zigue-zague do cabo <b>Coaxial</b>.</li>
+                            <li>Clique no divisor <b>Coaxial Splitter0</b> → escolha <b>Coaxial1</b> → clique no <b>Cable Modem</b> → escolha <b>Port 0</b>.</li>
+                            <li>Pegue outro cabo <b>Coaxial</b>, clique no <b>Coaxial Splitter0</b> → escolha <b>Coaxial2</b> → clique na <b>TV0</b> → escolha <b>Port 0</b>.</li>
+                            <li>Clique na <b>TV0</b> e, na aba <em>Config</em>, mude o <b>Status</b> para <b>ON</b> (a imagem do programa de TV aparecerá na tela).</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="2">
+                            <span>Parte 1 (Etapa 2): Conectar os 3 Cabos de Rede Ethernet (Cabo Direto)</span>
+                        </label>
+                        <span class="etapa-num">Etapa 02</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Em <b>Connections (⚡)</b>, escolha o cabo preto contínuo <b>Copper Straight-Through</b> (Par Trançado Direto).</li>
+                            <li>Conecte a <b>Port 1</b> do <b>Cable Modem</b> à porta <b>Internet</b> do <b>Home Wireless Router</b>.</li>
+                            <li>Conecte a porta <b>FastEthernet0</b> do <b>Office PC</b> à porta <b>GigabitEthernet 1</b> do <b>Home Wireless Router</b>.</li>
+                            <li>Conecte a porta <b>FastEthernet0</b> do <b>Bedroom PC</b> à porta <b>GigabitEthernet 2</b> do <b>Home Wireless Router</b>.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="3">
+                            <span>Parte 2 (Etapas 1 e 2): Ativar DHCP no Office PC, limitar DHCP a 10 usuários e trocar Senha Admin</span>
+                        </label>
+                        <span class="etapa-num">Etapa 03</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Clique no <b>Office PC</b> → aba <b>Desktop</b> → <b>IP Configuration</b> → selecione <b>DHCP</b> (ele receberá o IP <code>192.168.0.100</code> e Default Gateway <code>192.168.0.1</code>).</li>
+                            <li>Feche a janela de IP, abra o <b>Web Browser</b> do <b>Office PC</b>, digite <code>192.168.0.1</code> na barra de endereço e clique em <b>Go</b>. Faça login com usuário <code>admin</code> e senha <code>admin</code>.</li>
+                            <li>Na página inicial (aba <b>Setup → Basic Setup</b>), localize <b>Maximum number of Users</b> (Número máximo de usuários do DHCP), altere de <code>50</code> para <code>10</code>, role até o final e clique em <b>Save Settings</b>.</li>
+                            <li>Role até o topo, clique na guia <b>Administration</b> (subguia <b>Management</b>), altere a senha do roteador (<em>Router Password</em>) para <code>MyPassword1!</code> nos dois campos e clique em <b>Save Settings</b> no fim da página. Faça login novamente com <code>admin</code> e <code>MyPassword1!</code>.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="4">
+                            <span>Parte 2 (Etapa 3): Configurar a Rede Sem Fio 2,4 GHz (SSID MyHome e WPA2 Personal)</span>
+                        </label>
+                        <span class="etapa-num">Etapa 04</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Ainda no navegador do <b>Office PC</b> (na interface do roteador), clique na guia <b>Wireless</b> no topo.</li>
+                            <li>Na seção da rede de <b>2.4 GHz</b>, marque <b>Enable</b> e mude o <b>Network Name (SSID)</b> de <code>Default</code> para <code>MyHome</code>. Role até o fim e clique em <b>Save Settings</b>.</li>
+                            <li>Volte ao topo da guia <em>Wireless</em> e clique na subguia <b>Wireless Security</b>.</li>
+                            <li>Em <b>2.4 GHz</b>, altere o modo de segurança de <em>Disabled</em> para <b>WPA2 Personal</b>.</li>
+                            <li>No campo <b>Passphrase</b>, digite exatamente <code>MyPassPhrase1!</code> (respeitando maiúsculas e minúsculas), role até o fim e clique em <b>Save Settings</b>.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li class="etapa-card">
+                    <div class="etapa-cabeca">
+                        <label class="etapa-check">
+                            <input type="checkbox" data-etapa="5">
+                            <span>Parte 3: Conectar o Laptop no Wi-Fi, ativar DHCP no Bedroom PC e abrir skillsforall.srv</span>
+                        </label>
+                        <span class="etapa-num">Etapa 05</span>
+                    </div>
+                    <div class="etapa-corpo">
+                        <ol>
+                            <li>Clique no <b>Laptop</b> → aba <b>Desktop</b> → aplicativo <b>PC Wireless</b>.</li>
+                            <li>Vá na aba <b>Connect</b>, aguarde a rede <code>MyHome</code> aparecer na lista, selecione-a e clique em <b>Connect</b>.</li>
+                            <li>Digite a chave pré-compartilhada <code>MyPassPhrase1!</code> em <em>Pre-shared Key</em> e clique em <b>Connect</b>.</li>
+                            <li>Clique no <b>Bedroom PC</b> → aba <b>Desktop</b> → <b>IP Configuration</b> → mude para <b>DHCP</b>.</li>
+                            <li>Verifique no canto inferior direito da janela de instruções do Packet Tracer: sua pontuação estará em <b>100% (19/19)</b>! Para testar a navegação, abra o <b>Web Browser</b> em qualquer máquina e acesse <code>skillsforall.srv</code>.</li>
+                        </ol>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <!-- NAVEGAÇÃO ENTRE OS 5 LABORATÓRIOS -->
+        <section class="secao">
+            <h3 class="subtitulo">Todos os Laboratórios Cisco Packet Tracer</h3>
+            <nav class="labs-nav-grid" aria-label="Navegação entre os laboratórios">
+                <a class="lab-nav-item" href="./rede-fisica-local.html" data-par="azul">
+                    <small>Prática 01 · .PKT</small>
+                    <b>Criação de Rede Física Local</b>
+                </a>
+                <a class="lab-nav-item" href="./rede-wan-dns-web.html" data-par="verde">
+                    <small>Prática 02 · .PKT</small>
+                    <b>Rede WAN Completa (DNS + Web)</b>
+                </a>
+                <a class="lab-nav-item" href="./roteador-sem-fio.html" aria-current="page" data-par="laranja">
+                    <small>Lab 01 · .PKA</small>
+                    <b>Configurar Roteador Sem Fio e Clientes</b>
+                </a>
+                <a class="lab-nav-item" href="./conectar-servidor-web.html" data-par="marrom">
+                    <small>Lab 02 · .PKA</small>
+                    <b>Conectar-se a um Servidor Web</b>
+                </a>
+                <a class="lab-nav-item" href="./configurar-dhcp-wireless.html" data-par="azul">
+                    <small>Lab 03 · .PKA</small>
+                    <b>Configuração de DHCP em Roteador Wireless</b>
+                </a>
+            </nav>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <div class="rodape-cabo" aria-hidden="true">
+            <span class="via v-bl"></span><span class="via v-l"></span><span class="via v-bv"></span><span class="via v-a"></span>
+            <span class="via v-ba"></span><span class="via v-v"></span><span class="via v-bm"></span><span class="via v-m"></span>
+        </div>
+        <div class="rodape-inner">
+            <div class="rodape-marca">
+                <svg class="rodape-porta" viewBox="0 0 32 28" aria-hidden="true">
+                    <path class="porta-corpo" d="M3 3h26v16h-6v5H9v-5H3z" />
+                    <path class="porta-pinos" d="M9 3v6M12.5 3v6M16 3v6M19.5 3v6M23 3v6" />
+                </svg>
+                <p>Redes de Computadores</p>
+            </div>
+            <dl class="rodape-dados">
+                <div><dt>Docente</dt><dd>Prof. Ábner Lucas</dd></div>
+                <div><dt>Instituição</dt><dd>IFPA Campus Breves</dd></div>
+                <div><dt>Curso</dt><dd>Técnico em Informática</dd></div>
+                <div><dt>Disciplina</dt><dd>TIINF1647 · 67 h</dd></div>
+            </dl>
+        </div>
+        <p class="rodape-serigrafia" aria-hidden="true">RC-PORTAL · LAB 01 · ROTEADOR SEM FIO E CLIENTES</p>
+    </footer>
+
+    <script src="../logica.js?v=2026.11.23h"></script>
+    <script src="../script.js?v=2026.11.23h"></script>
+</body>
+</html>
